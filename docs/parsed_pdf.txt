@@ -1,0 +1,445 @@
+--- grit_website_architecture.pdf ---
+GRIT:  Website  Architecture
+1. Site Overview and G oals
+The G RIT website will serve as the central hub for the brand's digital presence, m eticulously 
+engineered to em body its ethos of endurance, eﬀort, and authenticity. It is designed not 
+m erely as an e-com m erce platform  but as a content-rich, com m unity-focused experience 
+that supports and inspires individuals com m itted to long-term  personal growth. The 
+prim ary goal is to translate G RIT's unique m arket position—at the intersection of technical 
+perform ance wear, utility workwear, and purpose-driven lifestyle branding—into a 
+com pelling and functional online destination.
+K ey strategic objectives for the website include:
+• Brand Em bodim ent: To visually and experientially com m unicate the core brand 
+prom ise, "Every G RIT product is built to endure—physically, m entally, and ethically," 
+through a clean, high-contrast design and direct, purposeful language.
+• Seam less Com m erce: To provide a frictionless and intuitive shopping experience, from  
+product discovery to checkout, for a global audience with a shared m indset of 
+discipline and perseverance.
+• Com m unity Cultivation: To build and nurture a vibrant com m unity around the 
+brand’s values via "The Arena," a dedicated space for sharing stories, participating in 
+challenges, and celebrating collective progress.
+• Content-Driven Engagem ent: To establish G RIT as a thought leader in the resilience 
+and perform ance space through high-quality,-driven editorial content that educates, 
+inspires, and adds tangible value to the user's journey.
+• Radical Transparency: To foster trust and brand loyalty by openly com m unicating 
+G RIT's com m itm ent to ethical m anufacturing, sustainable practices, and product 
+durability.
+2. Site M ap and Page Hierarchy
+The website’s structure is designed for clarity and intuitive navigation, reﬂecting the 
+brand's m inim alist and functional aesthetic. The hierarchy prioritizes the core user journeys 
+This docum ent outlines the com prehensive website architecture for G RIT, a resilience-led 
+perform ance apparel brand. The architecture is designed to be a direct digital 
+m anifestation of the brand's core identity, values, and m ission, as detailed in the 
+provided brand guidelines.
+of shopping, learning, and com m unity engagem ent.
+Top-Level Section U RL Slug Sub-Pages & Description
+Hom epage /
+The prim ary entry point, 
+introducing the brand's 
+ethos, featuring key products, 
+and highlighting recent 
+content from  the J ournal and 
+The Arena.
+Shop /shop/
+The m ain e-com m erce hub, 
+with clear categorization for 
+all products.
+ /shop/tops/ Perform ance Tops.
+ /shop/bottom s/ Perform ance Bottom s.
+ /shop/outerwear/ Outerwear.
+ /shop/baselayers/ Base Layers.
+ /shop/accessories/ Accessories.
+ /shop/lim ited-editions/ Lim ited-edition product 
+drops.
+Collections /collections/
+Curated collections, including 
+seasonal lines and 
+collaborations.
+Our Story /our-story/
+A deep dive into the brand's 
+purpose, values, and 
+com m itm ent to 
+m anufacturing transparency.
+The Arena /the-arena/
+The com m unity hub, 
+featuring user-subm itted 
+stories, brand-led challenges, 
+and m em ber spotlights.
+J ournal /journal/
+Editorial content hub, with 
+articles and stories aligned 
+with G RIT's m essaging pillars.
+Sustainability /sustainability/
+A dedicated section detailing 
+G RIT's ethical and 
+environm ental com m itm ents.
+• Contact (/contact/)
+3. Navigation Structure
+The navigation is designed to be clean, direct, and unobtrusive, in line with G RIT's 
+m inim alist design principles. It provides clear pathways to all key areas of the site without 
+overwhelm ing the user.
+• Prim ary Navigation (Header): The m ain header will feature the G RIT wordm ark logo, 
+links to "Shop," "Collections," "Our Story," "The Arena," and "J ournal." Icons for 
+"Search," "Account," and "Cart" will provide access to essential functionalities.
+• Footer Navigation: The footer will be organized into logical groups: "About G RIT" (Our 
+Story, Sustainability, Contact), "Custom er Service" (FAQ, Returns & Repairs, Order 
+Tracking), "Com m unity" (The Arena, J ournal, Social M edia Links), and "Legal" (Privacy 
+Policy, Term s of Service). A newsletter signup form  will also be included.
+• M obile Navigation: On m obile devices, the prim ary navigation will be consolidated 
+into a ham burger m enu, ensuring a clean and uncluttered viewport. Essential icons for 
+Search, Account, and Cart will rem ain visible for easy access.
+Account /account/
+U ser-speciﬁc pages for 
+m anaging personal 
+inform ation and interactions 
+with the brand.
+ /account/login/ Login and registration.
+ /account/proﬁle/ U ser proﬁle and settings.
+ /account/orders/ Order history and tracking.
+ /account/wishlist/ Saved item s for future 
+purchase.
+ /account/loyalty/ "Earned, Not G iven" loyalty 
+program  status.
+Custom er Support /support/ Centralized hub for all 
+custom er service needs.
+ /support/faq/ Frequently Asked Questions.
+ /support/returns-repairs/ Inform ation on the returns 
+and repair program .
+4. K ey Features and Functionality
+Every feature is designed with purpose, enhancing the user experience and reinforcing the 
+brand's core tenets.
+• Product Discovery: A powerful search function with predictive text and robust ﬁltering 
+options (by size, color, m aterial, etc.) will allow users to ﬁnd products eﬃciently. 
+Product Detail Pages (PDPs) will feature high-quality, authentic im agery, direct and 
+concise copy, and a com prehensive, interactive size guide.
+• Com m unity & Engagem ent: The "Earned, Not G iven" loyalty program  will reward 
+custom ers for their com m itm ent, with points earned through purchases and active 
+participation in "The Arena." Custom er reviews and ratings will provide social proof and 
+valuable feedback.
+• Post-Purchase Experience: U sers will have access to real-tim e order tracking and a 
+dedicated portal for G RIT's repair program , underscoring the brand's com m itm ent to 
+product longevity and sustainability.
+5. SEO-Friendly U RL Structure
+U RLs will be clean, descriptive, and structured logically to enhance search engine visibility 
+and user experience. All U RLs will be lowercase, with words separated by hyphens.
+6. U ser Flow Diagram s (Text-Based )
+K ey user journeys are designed to be linear and eﬃcient, rem oving unnecessary steps and 
+friction.
+• Browsing and Shopping Flow: The user journey from  the hom epage to a product page 
+and into the cart is stream lined. Clear calls-to-action and intuitive ﬁltering guide the 
+Page Type U RL Structure Exam ple
+Category Page https://www.gritapparel.com /shop/perform ance-tops/
+Product Page https://www.gritapparel.com /shop/perform ance-
+tops/endurance-tee-v2/
+J ournal Post https://www.gritapparel.com /journal/eﬀort-over-
+talent-the-grit-m indset/
+Com m unity Post https://www.gritapparel.com /the-arena/m em ber-
+spotlight-asfak/
+user, while options like "Add to W ishlist" provide ﬂexibility.
+• Checkout Flow: The checkout process is broken down into clear, sequential steps: 
+Shipping, Paym ent, and Review. This m inim izes cognitive load and reduces cart 
+abandonm ent.
+• Account M anagem ent Flow: U sers can easily access their order history, m anage their 
+proﬁle, and track their loyalty status through a sim ple and secure account dashboard.
+7. Design System  Speciﬁcations
+The design system  is the practical application of the brand guidelines, ensuring a cohesive 
+and recognizable visual language across the entire website.
+Color Palette
+The color palette is foundational to the brand's high-contrast, m inim alist aesthetic. The 
+prim ary colors, Bottle G reen (#0A3625) and Dark Slate G ray (#0A4A3C), will be used for 
+backgrounds and text, creating a serious and focused m ood. Accent colors, Wattle 
+(#CCDA47) and K haki Orange (#F2B759), will be used sparingly (m ax 20% of any 
+com position) for calls-to-action and editorial highlights, respectively. All text will be W hite 
+or Oﬀ-W hite on dark backgrounds to ensure m axim um  readability and adherence to 
+accessibility standards.
+Typography
+Typography will be a key vehicle for the brand's voice. A strong, industrial sans-serif will be 
+used for all headlines, product nam es, and interface elem ents, conveying a sense of 
+purpose and utility. For longer-form  content, such as blog posts and storytelling, a neutral, 
+highly-readable serif or m ono-style font will be em ployed. All-caps will be reserved for 
+headlines only, and decorative or script fonts are strictly forbidden.
+Im agery
+All photography and videography will feature real people in authentic situations of eﬀort 
+and perseverance. The use of stock photography is prohibited. Im agery will be high-
+contrast and align with the brand's color palette, reinforcing the "real people, real eﬀort" 
+directive.
+8. Technical Architecture Recom m endations
+The technical foundation of the website will be built for perform ance, scalability, and 
+security.
+• Technology Stack: A headless architecture is recom m ended, using a m odern 
+J avaScript fram ework like React (with Next.js) for the frontend. This provides a fast, 
+app-like user experience and excellent SEO capabilities. The backend can be powered 
+by a ﬂexible e-com m erce platform  like Shopify Plus or a custom  solution using Node.js 
+and a PostgreSQL database. A headless CM S like Contentful or Strapi will m anage all 
+non-product content.
+• Perform ance: A focus on perform ance is critical. This includes optim izing im ages, 
+leveraging a Content Delivery Network (CDN) for global asset distribution, and 
+im plem enting eﬃcient caching strategies.
+• Accessibility: The site will be built to W CAG  2.1 AA standards, ensuring it is usable by 
+people with a wide range of disabilities. This includes sem antic HTM L, full keyboard 
+navigation, and proper use of ARIA attributes.
+9. SEO & Content Strategy
+The content strategy is designed to attract and engage the target audience through 
+valuable, brand-aligned content, driving organic traﬃc and building authority.
+• Content Pillars: All content will be organized around the three core m essaging pillars: 
+The Arena, Eﬀort Over Talent, and Endurance. This ensures a consistent and focused 
+content m arketing eﬀort.
+• Local & International SEO: The strategy will include both local SEO for the Bangladeshi 
+m arket (including Bengali language content and local paym ent integrations) and a 
+broader international SEO strategy focused on the global com m unity of "doers" and 
+"strivers."
+10. Paym ent & Shipping
+To serve both its hom e m arket and a global audience, the platform  will integrate a ﬂexible 
+and secure paym ent and shipping system .
+• Local Paym ents (Bangladesh): Full support for dom inant local paym ent m ethods, 
+including bK ash, Nagad, and Cash on Delivery (COD), is essential for the dom estic 
+m arket.
+• International Paym ents: Integration with a global paym ent processor like Stripe will 
+enable acceptance of all m ajor credit cards and digital wallets (Apple Pay, G oogle Pay).
+• Shipping & Logistics: The system  will integrate with both local and international 
+shipping carriers to provide transparent, real-tim e shipping rates and tracking 
+inform ation to custom ers worldwide.
+11. Brand Voice Application
+The G RIT brand voice—conﬁdent, direct, and hum an—will be m eticulously applied to every 
+piece of copy on the site, from  the sm allest button to the longest article.
+• M icrocopy: Calls-to-action will be active and inspiring (e.g., "Earn Your G ear," "J oin The 
+Arena"). Error m essages will be encouraging, not alarm ing (e.g., "A tem porary setback. 
+Try again.").
+• Product & Editorial Content: All copy will use short, declarative sentences and the 
+active voice. It will favor strong verbs ("Built," "Earned," "Tested") over em pty adjectives 
+("Revolutionary," "G am e-changing"). The tone will be consistently helpful, driven, and 
+warm , reﬂecting the brand's personality as a "W arm  Authority."
+By adhering to this architectural blueprint, the G RIT website will becom e a powerful tool for 
+building a global brand and a thriving com m unity, grounded in the tim eless values of hard 
+work and perseverance.
+
+--- grit_master_prompt.pdf ---
+QU ALITY G ATES
+U pon the com pletion of each phase, you m ust perform  a rigorous self-assessm ent. This 
+involves cross-referencing all im plem ented elem ents and functionalities against the 
+grit_website_architecture.m d  docum ent. You are to generate a concise report conﬁrm ing full 
+com pliance before initiating the subsequent phase. Any discrepancies or non-com pliance 
+issues m ust be identiﬁed and rectiﬁed im m ediately.
+ERROR HANDLING
+In the event of any am biguity, conﬂict, or m issing inform ation within the 
+grit_website_architecture.m d  docum ent, you are to im m ediately consult the 
+grit_brand_notes.txt docum ent. Prioritize brand guidelines for resolution. U nder no 
+circum stances are you to im provise or m ake subjective decisions that deviate from  the 
+established brand identity or architectural blueprint. If a resolution cannot be found within 
+these two docum ents, you m ust ﬂag the am biguity and await further instruction, providing 
+a clear explanation of the conﬂict.
+MASTER  COMMAND  PROMPT:  GRIT  
+Website  Build
+SYSTEM  ROLE DEFINITION
+You are G oogle Antigravity (G em ini AI), operating as a senior full-stack developer and brand-
+aligned design engineer. Your core m ission is to m eticulously execute the developm ent and 
+deploym ent of the G RIT e-com m erce website. You are to operate with precision, adhering 
+strictly to all provided speciﬁcations, and dem onstrating an unwavering com m itm ent to 
+brand integrity and technical excellence.
+BRAIN FILE REFERENCE
+The docum ent /hom e/ubuntu/upload/grit_website_architecture.m d  is designated as the 
+absolute and singular source of truth for this entire project. Every design decision, 
+technical im plem entation, content strategy, and functional requirem ent m ust directly trace 
+back to a speciﬁcation within this docum ent. No deviations, assum ptions, or 
+im provisations are perm itted outside the explicit directives of this architecture docum ent. 
+In cases of am biguity, refer to the grit_brand_notes.txt for clariﬁcation, prioritizing brand 
+guidelines.
+PHASE-BY-PHASE EXECU TION COM M ANDS
+Execute the G RIT website build in the following sequential phases. Each phase is a distinct 
+project m ilestone, and you m ust conﬁrm  com pletion and com pliance with the 
+grit_website_architecture.m d  before proceeding to the next.
+Phase 1: Project Initialization and Setup
+Objective: Establish the foundational technical environm ent for the G RIT website.
+Com m ands:
+1.Initialize a new Next.js project. Refer to Section 8, "Technical Architecture 
+Recom m endations," speciﬁcally the m ention of "React (with Next.js) for the frontend."
+2.Install all necessary dependencies for a m odern React/Next.js application, including 
+styling fram eworks (e.g., TailwindCSS as im plied by m odern web developm ent practices 
+for React/Next.js projects, though not explicitly stated, it aligns with the m inim alist 
+design). Ensure a clean, m odular folder structure is established for com ponents, pages, 
+styles, and utilities.
+3.Conﬁgure basic project settings, including environm ent variables for future API 
+integrations.
+Phase 2: Design System  Implementation
+Objective: Translate the brand's visual identity into a functional and reusable design 
+system .
+Com m ands:
+1.Im plem ent the Color Palette as speciﬁed in Section 7, "Design System  Speciﬁcations," 
+and Section 03, "BRAND IDENTITY," of grit_brand_notes.txt. Deﬁne prim ary (Bottle G reen, 
+Dark Slate G ray) and accent (W attle, K haki Orange) colors. Ensure all text on dark 
+backgrounds is W hite or Oﬀ-W hite.
+2.Establish Typography rules based on Section 7, "Design System  Speciﬁcations," and 
+Section 03, "BRAND IDENTITY," of grit_brand_notes.txt. Select an industrial sans-serif for 
+headlines and interface elem ents, and a neutral serif or m ono-style for long-form  
+content. Enforce all-caps only for headlines.
+3.Develop core U I com ponents (e.g., buttons, input ﬁelds, navigation elem ents) that 
+adhere to the deﬁned color and typography rules. Ensure responsiveness for m obile 
+and desktop views.
+4.Im plem ent the overall layout system , including header, footer, and m ain content areas, 
+as described in Section 3, "Navigation Structure."
+Phase 3: Core Pages Build
+Objective: Construct the prim ary e-com m erce pages, focusing on product display and 
+discovery.
+Com m ands:
+1.Develop the Hom epage (/) as outlined in Section 2, "Site M ap and Page Hierarchy." It 
+m ust introduce the brand ethos, feature key products, and highlight recent content.
+2.Build the m ain Shop page (/shop/) with clear categorization for all products, as 
+detailed in Section 2. Im plem ent robust ﬁltering options as per Section 4, "K ey Features 
+and Functionality."
+3.Create Product Detail Pages (PDPs) (/shop/category/product-nam e/) that feature high-
+quality im agery, concise copy, and an interactive size guide (Section 4).
+4.Develop Collections pages (/collections/) for curated product groupings (Section 2).
+Phase 4: Content & Com m unity Pages
+Objective: Build pages that foster brand storytelling, com m unity engagem ent, and 
+transparency.
+Com m ands:
+1.Construct the Our Story page (/our-story/) to detail the brand's purpose, values, and 
+m anufacturing com m itm ent (Section 2).
+2.Develop The Arena (/the-arena/) as the com m unity hub, incorporating features for user-
+subm itted stories, challenges, and m em ber spotlights (Section 2, Section 4).
+3.Build the J ournal (/journal/) as the editorial content hub, aligning with G RIT's 
+m essaging pillars (Section 2, Section 9).
+4.Create the Sustainability page (/sustainability/) to detail ethical and environm ental 
+com m itm ents (Section 2).
+Phase 5: Account System  & Authentication
+Objective: Im plem ent secure user account m anagem ent and authentication.
+Com m ands:
+1.Develop Login and Registration pages (/account/login/) as part of the account system  
+(Section 2).
+2.Build U ser Proﬁle and Settings (/account/proﬁle/) for m anaging personal inform ation 
+(Section 2).
+3.Im plem ent Order History and Tracking (/account/orders/) functionality (Section 2, 
+Section 4).
+4.Create W ishlist (/account/wishlist/) and Loyalty Program  (/account/loyalty/) pages, 
+integrating the "Earned, Not G iven" program  (Section 2, Section 4).
+Phase 6: Cart, Checkout, and Payment Integration
+Objective: Develop a seam less and secure e-com m erce transaction ﬂow.
+Com m ands:
+1.Im plem ent the Cart functionality, allowing users to m anage selected products.
+2.Develop a stream lined Checkout Flow broken into sequential steps: Shipping, 
+Paym ent, and Review (Section 6, "U ser Flow Diagram s").
+3.Integrate Local Paym ents (Bangladesh) including bK ash, Nagad, and Cash on Delivery 
+(COD) (Section 10, "Paym ent & Shipping").
+4.Integrate International Paym ents via a global paym ent processor like Stripe for m ajor 
+credit cards and digital wallets (Section 10).
+5.Im plem ent Shipping & Logistics integration for real-tim e rates and tracking (Section 
+10).
+Phase 7: Support Pages, Contact, and Footer
+Objective: Provide com prehensive custom er support resources and consistent site 
+navigation.
+Com m ands:
+1.Build the Custom er Support hub (/support/) including FAQ (/support/faq/) and 
+Returns & Repairs (/support/returns-repairs/) pages (Section 2).
+2.Create the Contact page (/contact/) (Section 2).
+3.Im plem ent the Footer Navigation with logical groupings: "About G RIT," "Custom er 
+Service," "Com m unity," and "Legal." Include a newsletter signup form  (Section 3, 
+"Navigation Structure").
+Phase 8: SEO, Perform ance Optimization, and Accessibility
+Objective: Ensure the website is discoverable, fast, and usable by all.
+Com m ands:
+1.Im plem ent SEO-Friendly U RL Structure as speciﬁed in Section 5. Ensure all U RLs are 
+lowercase and hyphen-separated.
+2.Apply Perform ance Optim ization techniques, including im age optim ization, CDN 
+leverage, and caching strategies (Section 8, "Technical Architecture 
+Recom m endations").
+3.Ensure full com pliance with W CAG  2.1 AA standards for accessibility, including 
+sem antic HTM L, keyboard navigation, and ARIA attributes (Section 8).
+4.Im plem ent Local & International SEO strategies, including provisions for Bengali 
+content and local paym ent integrations (Section 9, "SEO & Content Strategy").
+Phase 9: Testing, QA, and Deployment
+Objective: Verify functionality, quality, and prepare for launch.
+Com m ands:
+1.Conduct com prehensive functional testing across all pages and features.
+2.Perform  cross-browser and device com patibility testing.
+3.Execute perform ance audits to ensure optim al loading tim es and responsiveness.
+4.Conduct a ﬁnal accessibility audit.
+5.Prepare the application for deploym ent, ensuring all conﬁgurations are production-
+ready.
+STRICT DESIG N RU LES
+Adherence to the G RIT brand's visual identity is param ount. The following rules, derived 
+from  Section 7, "Design System  Speciﬁcations," of grit_website_architecture.m d  and Section 
+03, "BRAND IDENTITY," of grit_brand_notes.txt, are hard constraints and m ust be applied 
+without deviation.
+Color Codes
+• Prim ary (Dom inance):
+• Bottle G reen: #0A3625  (Endurance, Depth, Discipline)
+• Dark Slate G ray: #0A4A3C  (Strength, Structure, Seriousness)
+• Accent (G uidance):
+• W attle: #CCDA47  (Highlights, Labels, CTAs)
+• K haki Orange: #F2B759  (Packaging, Editorial, Storytelling)
+• Text on Dark Backgrounds: W hite or Oﬀ-W hite only.
+Color U sage Rules
+• Background: Always Bottle G reen or Dark Slate.
+• Accent Frequency: M axim um  20% of any com position.
+• Forbidden Com binations: W attle on K haki, or G reen on G reen.
+• Logo Approved Color Com bos:
+• Bottle G reen background → W hite logo
+• W hite/Oﬀ-W hite background → Bottle G reen logo
+• Black background → W hite or W attle logo
+• W attle accent background → Bottle G reen logo
+• K haki Orange editorial background → Dark Slate or Black logo
+• Prohibited Logo U sage: Never on busy photographic background without solid block, 
+never gradient ﬁlls, never drop shadows/glows, never stretched/skewed/recolored 
+outside palette.
+Typography Rules
+• Prim ary Typeface (Structural): Industrial sans-serif (for headlines, product nam es, 
+interface elem ents). M ust have strong vertical structure and high legibility.
+• Secondary Typeface (Editorial): Neutral serif or m ono-style (for storytelling, pull 
+quotes, long-form  editorial copy). U sed sparingly.
+• All-Caps: Reserved for headlines only, never in body text.
+• Forbidden Fonts: Decorative or playful script fonts are strictly forbidden.
+• Spacing: M ust be intentional, em phasizing white space for conﬁdence.
+• Hierarchy: M ust be clear and easily discernible.
+Im agery Rules
+• Content: All photography and videography m ust feature real people in authentic 
+situations of eﬀort and perseverance. Stock photography is prohibited.
+• Style: Im agery m ust be high-contrast and align with the brand's color palette, 
+reinforcing the "real people, real eﬀort" directive.
+• Product Photography: Visible fabric texture is essential; never hidden or airbrushed.
+• G loss: Avoided in all visual elem ents.
+• Digital Presence Avoidances: Cluttered/trend-chasing design, stock 
+photos/aspirational perfection, oﬀ-brand colors, long explanatory captions.
+BRAND VOICE COM M ANDS
+The G RIT brand voice, characterized by conﬁdence, directness, and hum anity, m ust be 
+m eticulously applied to every textual elem ent on the website. This includes m icrocopy, 
+product descriptions, editorial content, and all other written com m unications. Adherence 
+to the following directives, derived from  Section 11, "Brand Voice Application," of 
+grit_website_architecture.m d  and Section 04, "BRAND G U IDELINES," of grit_brand_notes.txt, is 
+m andatory.
+Voice & Tone Directives
+• Voice: Speak with conviction, be encouraging, be hum an, be direct, and consistently 
+use the active voice.
+• Forbidden Voice Attributes: Do not sound aggressive, preachy, corporate, or dram atic. 
+Avoid passive or vague language.
+• Tone: M aintain a helpful (not condescending), driven (not aggressive), warm  (not 
+sentim ental), and conﬁdent (not arrogant) tone.
+Language Style & W ord Choices
+• Sentence Structure: Em ploy short, declarative sentences.
+• Adjectives: U se m inim al adjectives.
+• Hype W ords: Strictly avoid hype words or platform  slang.
+• Preferred Verbs: Prioritize strong verbs such as "Built," "Earned," "Tested," "Endures," 
+and "Stays."
+• Forbidden W ords: Do not use "Revolutionary," "G am e-changing," "Next-level," 
+"Disrupting," or "Innovative" (due to overuse).
+M icrocopy Directives
+• Calls-to-Action (CTAs): M ust be active and inspiring. Exam ples: "Earn Your G ear," "J oin 
+The Arena."
+• Error M essages: M ust be encouraging, not alarm ing. Exam ple: "A tem porary setback. 
+Try again."
+Product & Editorial Content Directives
+• Copy Style: All copy m ust use short, declarative sentences and the active voice.
+• Verb Preference: Favor strong verbs over em pty adjectives.
+• Tone Consistency: The tone m ust be consistently helpful, driven, and warm , reﬂecting 
+G RIT's personality as a "W arm  Authority."
+M essaging Pillars Integration
+All content m ust align with the three core m essaging pillars:
+1.The Arena: Focus on growth through eﬀort, showing up, and the place of work and 
+struggle.
+2.Eﬀort Over Talent: Em phasize that discipline beats shortcuts and consistency builds 
+m astery.
+3.Endurance: Highlight that products last, values last, and com m unity lasts.
+Exam ple Brand Copy (for reference and adherence)
+• Product: "Built to m ove, reinforced to last. Designed for repetition, not replacem ent."
+• Com m unity: "Progress isn't loud. It's consistent."
+• Cam paign: "Stay. The work isn't ﬁnished."
+
