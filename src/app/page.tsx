@@ -1,9 +1,65 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/Button";
+import { JsonLd } from "@/components/seo/JsonLd";
 
 export default function Home() {
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "GRIT",
+    "url": "https://www.gritapparel.com",
+    "logo": "https://www.gritapparel.com/images/brand_og_default_grit_1775671994429.png",
+    "contactPoint": [
+      {
+        "@type": "ContactPoint",
+        "telephone": "+880 1700 000 000",
+        "contactType": "customer service",
+        "availableLanguage": ["English", "Bengali"]
+      }
+    ],
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Dhaka",
+      "addressCountry": "BD"
+    }
+  };
+
+  const localBusinessSchema = {
+    "@context": "https://schema.org",
+    "@type": "Store",
+    "name": "GRIT Dhaka",
+    "image": "https://www.gritapparel.com/images/brand_og_default_grit_1775671994429.png",
+    "@id": "https://www.gritapparel.com",
+    "url": "https://www.gritapparel.com",
+    "telephone": "+880 1700 000 000",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Industrial Zone A, Uttara",
+      "addressLocality": "Dhaka",
+      "postalCode": "1230",
+      "addressCountry": "BD"
+    },
+    "openingHoursSpecification": {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Saturday",
+        "Sunday"
+      ],
+      "opens": "09:00",
+      "closes": "18:00"
+    },
+    "paymentAccepted": "Cash, Credit Card, bKash, Nagad",
+    "priceRange": "$$"
+  };
+
   return (
     <div className="w-full flex-1 flex flex-col">
+      <JsonLd data={organizationSchema} />
+      <JsonLd data={localBusinessSchema} />
        {/* Hero Section */}
        <section className="relative w-full h-[85vh] flex items-center justify-center overflow-hidden">
          <Image 
@@ -11,19 +67,20 @@ export default function Home() {
            alt="GRIT Athlete showing intense effort"
            fill
            priority
+           sizes="100vw"
            className="object-cover opacity-70 mix-blend-luminosity brightness-75 scale-105 duration-[15s] hover:scale-100 ease-in-out transition-transform"
          />
          {/* Background gradient mapping strictly to Brand Bottle Green */}
          <div className="absolute inset-0 bg-gradient-to-t from-bottle-green via-bottle-green/50 to-transparent pointer-events-none" />
          
-         <div className="relative z-10 container mx-auto px-6 flex flex-col items-center text-center mt-24">
-           <h1 className="font-structural text-6xl md:text-[8rem] font-black uppercase tracking-tighter text-white mb-6 leading-none">
+         <div className="relative z-10 container mx-auto px-6 flex flex-col items-center text-center mt-32 md:mt-40">
+           <h1 className="font-structural text-6xl md:text-[9rem] font-black uppercase tracking-tighter text-white mb-8 leading-[0.85]">
              Built<br/>To Endure.
            </h1>
-           <p className="font-editorial text-lg md:text-3xl text-gray-300 mb-12 max-w-2xl">
+           <p className="font-editorial text-lg md:text-3xl text-gray-300 mb-16 max-w-2xl">
              Designed for repetition. Tested by effort. 
            </p>
-           <Button variant="accent" size="lg" className="px-12 py-6 text-lg tracking-widest">EARN YOUR GEAR</Button>
+           <Button variant="accent" size="lg" className="px-16 py-8 text-xl tracking-widest hover:scale-105 transition-transform">EARN YOUR GEAR</Button>
          </div>
        </section>
 
@@ -36,7 +93,7 @@ export default function Home() {
               We believe discipline beats shortcuts and consistency builds mastery. 
               The work isn't finished. Show up.
             </p>
-            <Button variant="primary" size="lg">READ THE JOURNAL</Button>
+            <Button variant="secondary" size="lg">READ THE JOURNAL</Button>
          </div>
        </section>
        
@@ -57,6 +114,7 @@ export default function Home() {
                        src="/product_endurance.png" 
                        alt={`Endurance Tee Product V${item}`} 
                        fill 
+                       sizes="(min-width: 1024px) 25vw, (min-width: 768px) 50vw, 100vw"
                        className="object-cover scale-[1.03] opacity-80 mix-blend-luminosity grayscale group-hover:grayscale-0 group-hover:scale-100 transition-all duration-700 ease-in-out" 
                      />
                      <div className="absolute inset-0 bg-gradient-to-t from-bottle-green/80 via-transparent to-transparent opacity-100 mix-blend-multiply pointer-events-none" />

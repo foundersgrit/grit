@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/Button";
+import { NewsletterForm } from "@/components/NewsletterForm";
 
 export function Footer() {
   return (
@@ -47,18 +47,12 @@ export function Footer() {
         {/* Newsletter Signup */}
         <div className="mt-16 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex-1">
-            <h4 className="font-structural uppercase text-xl mb-2">Stay. The work isn't finished.</h4>
+            <h4 className="font-structural uppercase text-xl mb-2">Stay in the arena. Get updates that matter.</h4>
             <p className="font-editorial text-sm text-gray-400">Join the community. Earn your gear.</p>
           </div>
-          <form className="flex w-full md:w-auto gap-4" onSubmit={(e) => e.preventDefault()}>
-            <input 
-              type="email" 
-              placeholder="ENTER EMAIL" 
-              className="px-4 py-2 bg-bottle-green border border-white/20 text-white font-structural uppercase text-sm focus:outline-none focus:border-wattle w-full md:w-64"
-            />
-            <Button variant="accent" type="submit">Join</Button>
-          </form>
+          <NewsletterForm />
         </div>
+
       </div>
     </footer>
   );
