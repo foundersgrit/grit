@@ -1,8 +1,9 @@
 "use client";
 
-import { Category, CategorySlug } from "@/types";
+import { Category } from "@/types";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useCallback } from "react";
 
 interface ShopSidebarProps {
   categories: Category[];
@@ -10,6 +11,30 @@ interface ShopSidebarProps {
 
 export function ShopSidebar({ categories }: ShopSidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      if (params.get(name) === value) {
+        params.delete(name);
+      } else {
+        params.set(name, value);
+      }
+      return params.toString();
+    },
+    [searchParams]
+  );
+
+  const activeSize = searchParams.get("size");
+  const activeColor = searchParams.get("color");
+  const activeSort = searchParams.get("sort") || "newest";
+
+  const handleFilter = (name: string, value: string) => {
+    const query = createQueryString(name, value);
+    router.push(`${pathname}?${query}`, { scroll: false });
+  };
 
   return (
     <aside className="w-full md:w-64 shrink-0 font-structural">
@@ -47,7 +72,10 @@ export function ShopSidebar({ categories }: ShopSidebarProps) {
           {["S", "M", "L", "XL"].map((size) => (
             <button 
               key={size}
-              className="w-10 h-10 border border-white/10 flex items-center justify-center text-xs hover:border-wattle hover:text-wattle transition-all"
+              onClick={() => handleFilter("size", size)}
+              className={`w-10 h-10 border flex items-center justify-center text-xs transition-all ${
+                activeSize === size ? "bg-wattle text-bottle-green border-wattle" : "border-white/10 text-white hover:border-white/30"
+              }`}
             >
               {size}
             </button>
@@ -59,10 +87,17 @@ export function ShopSidebar({ categories }: ShopSidebarProps) {
         <h2 className="text-sm tracking-[0.2em] uppercase mb-6 text-gray-400">Color</h2>
         <div className="flex flex-col gap-3">
           {["Bottle Green", "Dark Slate", "Khaki"].map((color) => (
-            <label key={color} className="flex items-center gap-3 cursor-pointer group text-sm uppercase tracking-wider">
-              <input type="checkbox" className="sr-only" />
-              <div className="w-4 h-4 border border-white/20 group-hover:border-wattle transition-colors" />
-              <span className="group-hover:text-wattle transition-colors">{color}</span>
+            <label 
+              key={color} 
+              className="flex items-center gap-3 cursor-pointer group text-sm uppercase tracking-wider"
+              onClick={() => handleFilter("color", color.toLowerCase().replace(" ", "-"))}
+            >
+              <div className={`w-4 h-4 border transition-colors ${
+                activeColor === color.toLowerCase().replace(" ", "-") ? "bg-wattle border-wattle" : "border-white/20 group-hover:border-wattle"
+              }`} />
+              <span className={`${activeColor === color.toLowerCase().replace(" ", "-") ? "text-wattle" : "group-hover:text-wattle transition-colors"}`}>
+                {color}
+              </span>
             </label>
           ))}
         </div>
@@ -70,10 +105,14 @@ export function ShopSidebar({ categories }: ShopSidebarProps) {
 
       <div>
         <h2 className="text-sm tracking-[0.2em] uppercase mb-6 text-gray-400">Sort By</h2>
-        <select className="w-full bg-dark-slate border border-white/10 px-4 py-3 text-sm uppercase tracking-widest focus:outline-none focus:border-wattle">
-          <option>Newest</option>
-          <option>Price: Low to High</option>
-          <option>Price: High to Low</option>
+        <select 
+          value={activeSort}
+          onChange={(e) => handleFilter("sort", e.target.value)}
+          className="w-full bg-dark-slate border border-white/10 px-4 py-3 text-sm uppercase tracking-widest focus:outline-none focus:border-wattle"
+        >
+          <option value="newest">Newest</option>
+          <option value="price-low">Price: Low to High</option>
+          <option value="price-high">Price: High to Low</option>
         </select>
       </div>
     </aside>

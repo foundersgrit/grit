@@ -53,6 +53,7 @@ import { UserProvider } from "@/components/providers/UserProvider";
 import { CartProvider } from "@/components/providers/CartContext";
 import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
 import { ToastProvider } from "@/components/providers/ToastProvider";
+import { CartDrawer } from "@/components/shop/CartDrawer";
 
 export default function RootLayout({
   children,
@@ -74,6 +75,7 @@ export default function RootLayout({
             <CartProvider>
               <UserProvider>
                 <Header />
+                <CartDrawer />
                 <main id="main-content" className="flex-1 w-full flex flex-col">
                   {children}
                 </main>

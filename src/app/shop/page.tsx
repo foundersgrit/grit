@@ -13,8 +13,37 @@ export const metadata = {
   }
 };
 
+export default async function ShopPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const params = await searchParams;
+  const sizeFilter = params.size as string;
+  const colorFilter = params.color as string;
+  const sortFilter = params.sort as string;
 
-export default function ShopPage() {
+
+  let filteredProducts = [...MOCK_PRODUCTS];
+
+  if (sizeFilter) {
+    filteredProducts = filteredProducts.filter((p) => 
+      p.variants.some((v) => v.size === sizeFilter)
+    );
+  }
+
+  if (colorFilter) {
+    filteredProducts = filteredProducts.filter((p) => 
+      p.variants.some((v) => v.color.toLowerCase().replace(" ", "-") === colorFilter)
+    );
+  }
+
+  if (sortFilter === "price-low") {
+    filteredProducts.sort((a, b) => a.price - b.price);
+  } else if (sortFilter === "price-high") {
+    filteredProducts.sort((a, b) => b.price - a.price);
+  }
+
   return (
     <div className="flex-1 bg-bottle-green text-white pt-32 pb-32">
       <div className="container mx-auto px-4 max-w-7xl">
@@ -32,15 +61,22 @@ export default function ShopPage() {
                 </p>
               </div>
               <span className="font-structural text-sm text-gray-500 uppercase tracking-widest whitespace-nowrap">
-                {MOCK_PRODUCTS.length} Products
+                {filteredProducts.length} Products
               </span>
             </div>
 
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
-              {MOCK_PRODUCTS.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
+            {filteredProducts.length > 0 ? (
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
+                {filteredProducts.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            ) : (
+              <div className="py-24 text-center border border-dashed border-white/10 p-12">
+                <p className="font-editorial text-gray-400 mb-8">No gear matches these specific survival parameters.</p>
+                <a href="/shop" className="text-wattle uppercase tracking-widest text-xs border-b border-wattle pb-1">Reset All Filters</a>
+              </div>
+            )}
           </div>
         </div>
       </div>

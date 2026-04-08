@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useEffect, useMemo } from "react";
 import { CartItem, Product, ProductVariant } from "@/types";
 import { useToast } from "@/components/providers/ToastProvider";
+import { useSession } from "next-auth/react";
 
 interface CartContextType {
   cart: CartItem[];
@@ -14,6 +15,8 @@ interface CartContextType {
   subtotal: number;
   estimatedShipping: number;
   total: number;
+  isCartDrawerOpen: boolean;
+  setIsCartDrawerOpen: (open: boolean) => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -21,7 +24,10 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const { showToast } = useToast();
+  const { data: session, status } = useSession();
   const [isHydrated, setIsHydrated] = useState(false);
+  const [hasMerged, setHasMerged] = useState(false);
+  const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -42,6 +48,37 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem("grit_cart", JSON.stringify(cart));
     }
   }, [cart, isHydrated]);
+
+  // Handle Cart Merging on Login
+  useEffect(() => {
+    if (status === "authenticated" && isHydrated && !hasMerged) {
+      // Simulation: Fetch "Account Cart" from mock backend
+      const mockAccountCart: CartItem[] = [
+        // Imagine some items from previous session
+      ];
+
+      if (mockAccountCart.length > 0) {
+        setCart((prevGuestCart) => {
+          const mergedCart = [...prevGuestCart];
+          
+          mockAccountCart.forEach((accountItem) => {
+            const existingInGuest = mergedCart.find(i => i.id === accountItem.id);
+            if (!existingInGuest) {
+              // Only add if not in guest cart (Guest overwrites Account per rule)
+              mergedCart.push(accountItem);
+            }
+          });
+
+          return mergedCart;
+        });
+
+        showToast("Your previous saved items have been added to your cart.");
+      }
+      setHasMerged(true);
+    } else if (status === "unauthenticated") {
+      setHasMerged(false);
+    }
+  }, [status, isHydrated, hasMerged, showToast]);
 
   const addItem = (product: Product, variant: ProductVariant, quantity: number = 1) => {
     const cartItemId = `${product.id}-${variant.id}`;
@@ -71,6 +108,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       return [...prevCart, newItem];
     });
 
+    setIsCartDrawerOpen(true);
     showToast("Added to cart.");
   };
 
@@ -120,7 +158,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       itemCount, 
       subtotal, 
       estimatedShipping, 
-      total 
+      total,
+      isCartDrawerOpen,
+      setIsCartDrawerOpen
     }}>
       {children}
     </CartContext.Provider>

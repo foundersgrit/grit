@@ -15,12 +15,13 @@ export function CheckoutFlow() {
   const { data: session } = useSession();
   
   const [step, setStep] = useState<Step>(1);
-  const [isGuest, setIsGuest] = useState(false);
   const [isConfirmed, setIsConfirmed] = useState(false);
+  const [saveAccount, setSaveAccount] = useState(false);
   
   // Form States
   const [shippingInfo, setShippingInfo] = useState({
     email: session?.user?.email || "",
+    phone: "",
     firstName: "",
     lastName: "",
     address: "",
@@ -38,6 +39,8 @@ export function CheckoutFlow() {
     const newErrors: Record<string, string> = {};
     
     if (step === 1) {
+      if (!shippingInfo.email) newErrors.email = "Email is required.";
+      if (!shippingInfo.phone) newErrors.phone = "Phone is required.";
       if (!shippingInfo.firstName) newErrors.firstName = "First name is required.";
       if (!shippingInfo.lastName) newErrors.lastName = "Last name is required.";
       if (!shippingInfo.address) newErrors.address = "Address is required.";
@@ -145,22 +148,46 @@ export function CheckoutFlow() {
               exit={{ opacity: 0, x: 20 }}
               className="flex flex-col gap-10"
             >
-              {!session && !isGuest && (
-                <div className="bg-bottle-green/30 border border-white/10 p-8">
-                  <h3 className="font-structural text-xl uppercase tracking-tight mb-4 text-white">Guest or Member?</h3>
-                  <p className="font-editorial text-sm text-gray-400 mb-8">
-                    Sign in to track your order and earn your place in the loyalty program.
-                  </p>
-                  <div className="flex flex-col md:flex-row gap-4">
-                    <Button onClick={() => signIn()} variant="secondary" className="flex-1">Sign In</Button>
-                    <Button onClick={() => setIsGuest(true)} variant="ghost" className="flex-1 border-white/10 text-white hover:text-wattle">Continue as Guest</Button>
+              <div className="flex flex-col gap-8">
+                <h2 className="font-structural text-2xl uppercase tracking-widest border-b border-white/10 pb-4">Contact Information</h2>
+                
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="flex flex-col gap-2">
+                    <label className="font-structural text-xs uppercase tracking-widest text-gray-500">Email Address <span className="text-wattle">*</span></label>
+                    <input 
+                      type="email"
+                      className={`bg-dark-slate border px-4 py-3 text-white focus:outline-none transition-all ${errors.email ? 'border-red-500/50 focus:ring-1 focus:ring-red-500' : 'border-white/10 focus:border-bottle-green focus:ring-1 focus:ring-bottle-green'}`} 
+                      value={shippingInfo.email}
+                      onChange={(e) => setShippingInfo({...shippingInfo, email: e.target.value})}
+                    />
+                    {errors.email && <span className="text-[10px] text-red-400 font-editorial uppercase tracking-wider">{errors.email}</span>}
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label className="font-structural text-xs uppercase tracking-widest text-gray-500">Phone Number <span className="text-wattle">*</span></label>
+                    <input 
+                      type="tel"
+                      className={`bg-dark-slate border px-4 py-3 text-white focus:outline-none transition-all ${errors.phone ? 'border-red-500/50 focus:ring-1 focus:ring-red-500' : 'border-white/10 focus:border-bottle-green focus:ring-1 focus:ring-bottle-green'}`} 
+                      value={shippingInfo.phone}
+                      onChange={(e) => setShippingInfo({...shippingInfo, phone: e.target.value})}
+                      onBlur={() => {
+                        if (shippingInfo.phone) {
+                          console.log("CRO Trigger: Capturing phone for cart recovery payload...", shippingInfo.phone);
+                        }
+                      }}
+                    />
+                    {errors.phone && <span className="text-[10px] text-red-400 font-editorial uppercase tracking-wider">{errors.phone}</span>}
                   </div>
                 </div>
-              )}
 
-              {(session || isGuest) && (
-                <div className="flex flex-col gap-8">
-                  <h2 className="font-structural text-2xl uppercase tracking-widest border-b border-white/10 pb-4">Shipping Information</h2>
+                <div className="flex justify-between items-center py-4 bg-wattle/5 border-l-2 border-wattle px-6">
+                  <span className="font-editorial text-sm text-gray-300">Fast Delivery Available</span>
+                  <div className="text-right">
+                    <span className="block font-structural text-[10px] uppercase tracking-widest text-wattle">Est. Arrival</span>
+                    <span className="font-editorial text-xs text-white">Dhaka: 24h | Outside: 72h</span>
+                  </div>
+                </div>
+
+                <h2 className="font-structural text-2xl uppercase tracking-widest border-b border-white/10 pb-4 mt-4">Shipping Destination</h2>
                   
                   <div className="grid md:grid-cols-2 gap-6">
                      <div className="flex flex-col gap-2">
@@ -229,9 +256,9 @@ export function CheckoutFlow() {
 
                   <Button variant="accent" onClick={handleNext} className="mt-8 py-6 uppercase text-lg">Continue to Payment</Button>
                 </div>
-              )}
-            </motion.div>
-          )}
+              </motion.div>
+            )}
+
 
           {/* Step 2: Payment */}
           {step === 2 && (
@@ -269,15 +296,19 @@ export function CheckoutFlow() {
                 <div className="bg-bottle-green/30 border border-white/10 p-8">
                   {(paymentMethod === "bkash" || paymentMethod === "nagad") && (
                     <div className="flex flex-col gap-6">
-                      <div className="p-4 bg-dark-slate border border-white/5">
-                        <span className="text-gray-400 text-xs block mb-2 uppercase tracking-widest">Merchant Number</span>
-                        <span className="font-structural text-2xl text-wattle font-bold">+880 1700 000 000</span>
+                      <div className="p-4 bg-dark-slate border border-white/5 border-l-4 border-wattle">
+                        <span className="text-gray-400 text-xs block mb-2 uppercase tracking-widest">Merchant Number (Send Money)</span>
+                        <div className="flex justify-between items-center">
+                          <span className="font-structural text-2xl text-wattle font-bold">+880 1700 000 000</span>
+                          <span className="bg-wattle/10 text-wattle px-3 py-1 text-[10px] font-structural uppercase">Personal</span>
+                        </div>
                       </div>
                       <div className="space-y-4 font-editorial text-sm text-gray-300">
                         <p>1. Open your {paymentMethod} app.</p>
-                        <p>2. Select "Send Money" or "Make Payment" to our merchant number above.</p>
+                        <p>2. Select "Send Money" to our merchant number above.</p>
                         <p>3. Enter the Transaction ID from your confirmation message below.</p>
                       </div>
+
                       <div className="flex flex-col gap-2 pt-4">
                         <label className="font-structural text-xs uppercase tracking-widest text-gray-500">Transaction ID <span className="text-wattle">*</span></label>
                         <input 
@@ -363,15 +394,25 @@ export function CheckoutFlow() {
                     <p className="font-editorial text-gray-400 mb-8 max-w-sm mx-auto">
                       Review your order. Once confirmed, we start building and preparing your gear for its longest sessions.
                     </p>
+                    {!session && (
+                      <div className="mb-8 flex items-center justify-center gap-3 cursor-pointer group" onClick={() => setSaveAccount(!saveAccount)}>
+                        <div className={`w-5 h-5 border flex items-center justify-center transition-colors ${saveAccount ? 'bg-wattle border-wattle' : 'border-white/20 group-hover:border-wattle'}`}>
+                          {saveAccount && <div className="w-2 h-2 bg-bottle-green" />}
+                        </div>
+                        <span className="font-editorial text-sm text-gray-400 group-hover:text-white transition-colors">Save my details for next time</span>
+                      </div>
+                    )}
                     <Button variant="accent" size="lg" className="w-full py-6 text-xl tracking-tighter" onClick={handleNext} disabled={isSubmitting}>
                       {isSubmitting ? (
                         <div className="flex items-center gap-2">
                           <div className="w-5 h-5 border-2 border-bottle-green/30 border-t-bottle-green rounded-full animate-spin" />
+                          <span className="text-sm font-structural uppercase tracking-widest">Securing Gear...</span>
                         </div>
                       ) : (
                         "Confirm Order"
                       )}
                     </Button>
+
                   </div>
                </div>
             </motion.div>
