@@ -14,6 +14,7 @@ export function ProfileForm() {
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
   const [password, setPassword] = useState("");
+  const [isUpdating, setIsUpdating] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const supabase = createClient();
 
