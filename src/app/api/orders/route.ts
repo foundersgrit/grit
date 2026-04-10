@@ -1,4 +1,5 @@
 import { adminDb, adminAuth } from '@/lib/firebase/admin';
+import { FieldValue } from 'firebase-admin/firestore';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -41,7 +42,7 @@ export async function POST(request: NextRequest) {
     if (userId !== "guest") {
       await adminDb.collection('users').doc(userId).set({
         lastOrderAt: finalOrder.createdAt,
-        totalOrders: adminDb.FieldValue.increment(1)
+        totalOrders: FieldValue.increment(1)
       }, { merge: true });
     }
 

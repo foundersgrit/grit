@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { motion, HTMLMotionProps, useReducedMotion } from "framer-motion";
 
 export interface ButtonProps extends HTMLMotionProps<"button"> {
-  variant?: "primary" | "secondary" | "outline" | "ghost";
+  variant?: "primary" | "secondary" | "outline" | "ghost" | "accent";
   size?: "default" | "sm" | "lg" | "icon";
   isLoading?: boolean;
 }
@@ -26,6 +26,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       // Outline style
       outline: "bg-transparent text-white border border-white/20 hover:bg-dark-slate hover:border-dark-slate",
       ghost: "hover:bg-dark-slate text-white",
+      // Accent (Wattle border/text)
+      accent: "bg-transparent text-wattle border border-wattle hover:bg-wattle hover:text-bottle-green",
     };
     
     const sizes = {
@@ -59,7 +61,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         <span className={cn("flex items-center gap-2", isLoading && "opacity-0")}>
-          {children}
+          {children as React.ReactNode}
         </span>
         
         {isLoading && (

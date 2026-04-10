@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { useAuth } from "@/components/providers/AuthProvider";
@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ConfirmationNumber, Bolt, ErrorOutline, CheckCircleOutline } from "@mui/icons-material";
 import { useToast } from "@/components/providers/ToastProvider";
 
-export default function RedeemPage() {
+function RedeemContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
@@ -149,5 +149,13 @@ export default function RedeemPage() {
         </footer>
       </motion.div>
     </div>
+  );
+}
+
+export default function RedeemPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-dark-slate flex items-center justify-center font-structural text-wattle uppercase tracking-widest">Identifying Credits...</div>}>
+      <RedeemContent />
+    </Suspense>
   );
 }

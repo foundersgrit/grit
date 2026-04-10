@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion, Variants } from "framer-motion";
 import React from "react";
 
 interface FadeInProps {
@@ -20,7 +20,7 @@ export function FadeIn({
 }: FadeInProps) {
   const shouldReduceMotion = useReducedMotion();
 
-  const variants = {
+  const variants: Variants = {
     hidden: {
       opacity: 0,
       y: direction === "up" ? 30 : direction === "down" ? -30 : 0,

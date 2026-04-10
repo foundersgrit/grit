@@ -25,7 +25,8 @@ export async function GET(request: Request) {
 
     // 3. Idempotency Check (Prevent accidental re-seeding)
     // We'll check if any products exist as a simple flag
-    const productsSnapshot = await adminAuth.app.firestore().collection('products').limit(1).get();
+    const { adminDb } = await import('@/lib/firebase/admin');
+    const productsSnapshot = await adminDb.collection('products').limit(1).get();
     if (!productsSnapshot.empty) {
       return NextResponse.json({ message: 'Already seeded. No action taken.' });
     }

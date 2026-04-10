@@ -56,7 +56,7 @@ export function LoyaltyDashboard() {
           Milestone Evidence
         </h3>
         <div className="grid gap-4">
-          {loyalty.milestones.map((milestone, i) => (
+          {loyalty.milestones.map((milestone: string, i: number) => (
             <div key={i} className="bg-dark-slate p-4 border border-white/5 flex items-center gap-4">
               <div className="w-2 h-2 bg-wattle rotate-45 shrink-0" />
               <span className="font-editorial text-gray-300">{milestone}</span>

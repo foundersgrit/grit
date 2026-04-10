@@ -1,4 +1,6 @@
-import * as functions from 'firebase-functions';
+import { onCall, HttpsError, onRequest } from "firebase-functions/v2/https";
+import { onDocumentCreated } from "firebase-functions/v2/firestore";
+import { auth } from "firebase-functions/v1";
 import * as admin from 'firebase-admin';
 
 admin.initializeApp();
@@ -24,9 +26,9 @@ interface CartItem {
 }
 
 // --- CREATE ORDER FUNCTION ---
-export const createOrder = functions.https.onCall(async (request) => {
+export const createOrder = onCall(async (request) => {
   if (!request.auth) {
-    throw new functions.https.HttpsError('unauthenticated', 'User must be signed in.');
+    throw new HttpsError('unauthenticated', 'User must be signed in.');
   }
 
   const { items, total, shippingDetails } = request.data;
@@ -39,14 +41,14 @@ export const createOrder = functions.https.onCall(async (request) => {
       const productDoc = await transaction.get(productRef);
       
       if (!productDoc.exists) {
-        throw new functions.https.HttpsError('not-found', `Product ${item.id} not found.`);
+        throw new HttpsError('not-found', `Product ${item.id} not found.`);
       }
 
       const productData = productDoc.data()!;
       const variant = productData.variants?.find((v: any) => v.id === item.variantId);
       
       if (!variant || variant.stock < item.quantity) {
-        throw new functions.https.HttpsError('resource-exhausted', `Insufficient stock for ${productData.name}.`);
+        throw new HttpsError('resource-exhausted', `Insufficient stock for ${productData.name}.`);
       }
     }
 
@@ -95,8 +97,8 @@ export const createOrder = functions.https.onCall(async (request) => {
 });
 
 // --- PAYMENT WEBHOOK (MOCK) ---
-export const handlePaymentWebhook = functions.https.onRequest(async (req, res) => {
-  const { provider, orderId, transactionId, status, amount } = req.body;
+export const handlePaymentWebhook = onRequest(async (req, res) => {
+  const { provider, orderId, transactionId, status } = req.body;
 
   try {
     const orderRef = db.collection('orders').doc(orderId);
@@ -107,8 +109,6 @@ export const handlePaymentWebhook = functions.https.onRequest(async (req, res) =
       return;
     }
 
-    // In a real scenario, verify signature here based on 'provider'
-    
     if (status === 'success') {
       await orderRef.update({
         paymentStatus: 'Paid',
@@ -132,9 +132,9 @@ export const handlePaymentWebhook = functions.https.onRequest(async (req, res) =
 });
 
 // --- USER INITIALIZATION TRIGGER ---
-export const onUserCreate = functions.auth.user().onCreate(async (user) => {
+export const onUserCreate = auth.user().onCreate(async (user) => {
   const referralCode = generateReferralCode();
-  const siteUrl = 'https://www.gritapparel.com'; // Should be config driven in production
+  const siteUrl = 'https://www.gritapparel.com'; 
   
   const userData = {
     email: user.email,
@@ -175,9 +175,9 @@ export const onUserCreate = functions.auth.user().onCreate(async (user) => {
 });
 
 // --- CLAIM REFERRAL CALLABLE ---
-export const claimReferral = functions.https.onCall(async (request) => {
+export const claimReferral = onCall(async (request) => {
   if (!request.auth) {
-    throw new functions.https.HttpsError('unauthenticated', 'User must be signed in.');
+    throw new HttpsError('unauthenticated', 'User must be signed in.');
   }
 
   const { referralCode } = request.data;
@@ -185,7 +185,6 @@ export const claimReferral = functions.https.onCall(async (request) => {
 
   if (!referralCode) return { success: false, message: 'No code provided.' };
 
-  // 1. Find the referrer
   const referrersRef = db.collection('users');
   const q = referrersRef.where('referral.referralCode', '==', referralCode).limit(1);
   const snapshot = await q.get();
@@ -201,7 +200,6 @@ export const claimReferral = functions.https.onCall(async (request) => {
      return { success: false, message: 'Self-referral is prohibited.' };
   }
 
-  // 2. Update referred user and create referral record
   const referredRef = db.collection('users').doc(referredUid);
   
   return await db.runTransaction(async (transaction) => {
@@ -213,13 +211,11 @@ export const claimReferral = functions.https.onCall(async (request) => {
        return { success: false, message: 'Referral already claimed.' };
     }
 
-    // Link in user doc
     transaction.update(referredRef, {
       'referral.referredBy': referrerUid,
       updatedAt: admin.firestore.FieldValue.serverTimestamp()
     });
 
-    // Create record in referrals collection
     const referralId = `${referrerUid}_${referredUid}`;
     const referralRecordRef = db.collection('referrals').doc(referralId);
     
@@ -252,7 +248,6 @@ async function awardXP(uid: string, amount: number, db: admin.firestore.Firestor
 
     const newXP = (loyalty.totalXP || 0) + amount;
     
-    // Tier Logic
     let newTier = loyalty.currentTier;
     if (newXP >= 5000) newTier = "Iron Will";
     else if (newXP >= 2500) newTier = "Arena";
@@ -264,7 +259,6 @@ async function awardXP(uid: string, amount: number, db: admin.firestore.Firestor
       "loyalty.updatedAt": admin.firestore.FieldValue.serverTimestamp()
     });
 
-    // Create XP Log
     const logRef = userRef.collection('xpLogs').doc();
     transaction.set(logRef, {
       amount,
@@ -275,15 +269,15 @@ async function awardXP(uid: string, amount: number, db: admin.firestore.Firestor
 }
 
 // --- DAILY STREAK CALLABLE ---
-export const claimDailyXP = functions.https.onCall(async (data, context) => {
-  if (!context.auth) throw new functions.https.HttpsError('unauthenticated', 'Operative identity not verified.');
+export const claimDailyXP = onCall(async (request) => {
+  if (!request.auth) throw new HttpsError('unauthenticated', 'Operative identity not verified.');
   
-  const uid = context.auth.uid;
+  const uid = request.auth.uid;
   const userRef = db.collection('users').doc(uid);
 
   return await db.runTransaction(async (transaction) => {
     const userDoc = await transaction.get(userRef);
-    if (!userDoc.exists) throw new functions.https.HttpsError('not-found', 'Operative profile missing.');
+    if (!userDoc.exists) throw new HttpsError('not-found', 'Operative profile missing.');
 
     const profile = userDoc.data() || {};
     const loyalty = profile.loyalty || { totalXP: 0, streakDays: 0, lastCheckIn: null };
@@ -291,9 +285,8 @@ export const claimDailyXP = functions.https.onCall(async (data, context) => {
     const now = new Date();
     const lastCheckIn = loyalty.lastCheckIn ? loyalty.lastCheckIn.toDate() : null;
     
-    // Check if already claimed today
     if (lastCheckIn && lastCheckIn.toDateString() === now.toDateString()) {
-      throw new functions.https.HttpsError('already-exists', 'Daily XP already secured for this cycle.');
+      throw new HttpsError('already-exists', 'Daily XP already secured for this cycle.');
     }
 
     let newStreak = 1;
@@ -306,7 +299,7 @@ export const claimDailyXP = functions.https.onCall(async (data, context) => {
     }
 
     let bonusXP = 50;
-    if (newStreak % 7 === 0) bonusXP += 500; // Weekly bonus
+    if (newStreak % 7 === 0) bonusXP += 500; 
 
     transaction.update(userRef, {
       "loyalty.totalXP": (loyalty.totalXP || 0) + bonusXP,
@@ -325,29 +318,23 @@ function generateGiftCardCode() {
 }
 
 // --- GIFT CARD CREATION TRIGGER ---
-export const onGiftCardCreated = functions.firestore
-  .document('giftCards/{cardId}')
-  .onCreate(async (snapshot) => {
+export const onGiftCardCreated = onDocumentCreated('giftCards/{cardId}', async (event) => {
+    const snapshot = event.data;
+    if (!snapshot) return;
     const cardData = snapshot.data();
     if (!cardData) return;
 
     const code = generateGiftCardCode();
-    const expiresAt = admin.firestore.FieldValue.serverTimestamp(); // Would be +12 months in real logic
+    const expiresAt = admin.firestore.FieldValue.serverTimestamp(); 
     
-    // 1. Finalize the card record
     await snapshot.ref.update({
       code,
       status: "active",
       balance: cardData.amount,
-      expiresAt, // Placeholder logic
+      expiresAt, 
       updatedAt: admin.firestore.FieldValue.serverTimestamp()
     });
 
-    // 2. Trigger Delivery Email (Integration Placeholder)
-    // In production, this would use 'Trigger Email' extension or SendGrid
-    console.log(`Endurance Credit ${code} generated for ${cardData.recipientEmail}`);
-    
-    // Create a pending notification for the purchaser (Feature Set 6 Preview)
     const purchaserId = cardData.purchaserUid;
     if (purchaserId) {
       const notificationRef = db.collection('users').doc(purchaserId).collection('notifications').doc();
@@ -362,9 +349,9 @@ export const onGiftCardCreated = functions.firestore
   });
 
 // --- ORDER COMPLETION TRIGGER (REFERRAL & XP) ---
-export const onOrderCreated = functions.firestore
-  .document('orders/{orderId}')
-  .onCreate(async (snapshot) => {
+export const onOrderCreated = onDocumentCreated('orders/{orderId}', async (event) => {
+    const snapshot = event.data;
+    if (!snapshot) return;
     const orderData = snapshot.data();
     if (!orderData) return;
     
@@ -378,14 +365,12 @@ export const onOrderCreated = functions.firestore
       
       const userData = userDoc.data()!;
       
-      // 1. AWARD XP (100 XP PER 1000 SPENT)
       const earnedXP = Math.floor(total / 1000) * 100;
       if (earnedXP > 0) {
         const currentLoyalty = userData.loyalty || { totalXP: 0, currentTierXP: 0, nextTierThreshold: 1000, currentTier: "Foundation" };
         const newTotalXP = currentLoyalty.totalXP + earnedXP;
         const newTierXP = currentLoyalty.currentTierXP + earnedXP;
         
-        // Tier Logic (Simplified for now)
         let newTier = currentLoyalty.currentTier;
         if (newTotalXP >= 15000) newTier = "Iron Will";
         else if (newTotalXP >= 5000) newTier = "Arena";
@@ -398,7 +383,6 @@ export const onOrderCreated = functions.firestore
           updatedAt: admin.firestore.FieldValue.serverTimestamp()
         });
         
-        // Create Notification (Feature Set 6 Preview)
         const notificationRef = db.collection('users').doc(userId).collection('notifications').doc();
         transaction.set(notificationRef, {
           type: 'loyalty',
@@ -409,7 +393,6 @@ export const onOrderCreated = functions.firestore
         });
       }
 
-      // 2. REFERRAL COMPLETION
       const referral = userData.referral;
       if (referral && referral.referredBy && referral.referralsCompleted === 0) {
         const referrerId = referral.referredBy;
@@ -417,7 +400,6 @@ export const onOrderCreated = functions.firestore
         const referrerDoc = await transaction.get(referrerRef);
         
         if (referrerDoc.exists) {
-          const referrerData = referrerDoc.data()!;
           const rewardId = `REWARD-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
           
           const newReward = {
@@ -430,13 +412,11 @@ export const onOrderCreated = functions.firestore
             orderId: snapshot.id
           };
           
-          // Update Referrer
           transaction.update(referrerRef, {
             'referral.referralsCompleted': admin.firestore.FieldValue.increment(1),
             'referral.referralRewards': admin.firestore.FieldValue.arrayUnion(newReward)
           });
           
-          // Notify Referrer
           const refNotificationRef = db.collection('users').doc(referrerId).collection('notifications').doc();
           transaction.set(refNotificationRef, {
             type: 'referral',
@@ -446,9 +426,8 @@ export const onOrderCreated = functions.firestore
             read: false
           });
           
-          // Mark this user as completed (prevent double credit)
           transaction.update(userRef, {
-             'referral.referralsCompleted': 1 // Indicates first purchase made
+             'referral.referralsCompleted': 1 
           });
         }
       }

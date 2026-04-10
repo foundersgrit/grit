@@ -27,7 +27,7 @@ export function ProductCard({ product }: ProductCardProps) {
     e.preventDefault();
     e.stopPropagation();
     if (product.variants && product.variants.length > 0) {
-                            addItem(product, defaultVariant, 1);
+      addItem(product, product.variants[0], 1);
     }
   };
 

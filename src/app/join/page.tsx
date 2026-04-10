@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { motion } from "framer-motion";
 import { MaskReveal } from "@/components/ui/MaskReveal";
 
-export default function JoinPage() {
+function JoinContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { user } = useAuth();
@@ -94,5 +94,13 @@ export default function JoinPage() {
         )}
       </motion.div>
     </div>
+  );
+}
+
+export default function JoinPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-dark-slate flex items-center justify-center font-structural text-wattle uppercase tracking-widest">Initialising Protocol...</div>}>
+      <JoinContent />
+    </Suspense>
   );
 }

@@ -21,10 +21,15 @@ export function SocialProof() {
   useEffect(() => {
     const q = query(ordersRef, orderBy("createdAt", "desc"), limit(5));
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as ProofOrder[];
+      const data = snapshot.docs.map(doc => {
+        const orderData = doc.data();
+        return {
+          id: doc.id,
+          items: orderData.items || [],
+          shippingAddress: orderData.shippingAddress || { city: "Unknown" },
+          createdAt: orderData.createdAt
+        };
+      }) as ProofOrder[];
       setOrders(data);
     });
 

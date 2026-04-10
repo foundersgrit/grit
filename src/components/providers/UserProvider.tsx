@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { Order, WishlistItem, LoyaltyStatus } from "@/types";
+import { Order, WishlistItem, LoyaltyStatus, UserReferral } from "@/types";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { db } from "@/lib/firebase/config";
 import { collection, query, where, onSnapshot, doc, orderBy } from "firebase/firestore";

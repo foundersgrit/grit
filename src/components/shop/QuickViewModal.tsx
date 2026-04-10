@@ -28,16 +28,7 @@ export function QuickViewModal({ product, onClose }: QuickViewModalProps) {
   const handleAddToCart = () => {
     if (!selectedSize) return;
     if (selectedVariant) {
-      addItem({
-        id: `${product.id}-${selectedVariant.size}`,
-        productId: product.id,
-        name: product.name,
-        price: product.price,
-        image: product.images[0],
-        quantity: 1,
-        selectedSize: selectedVariant.size,
-        selectedColor: selectedVariant.color
-      });
+      addItem(product, selectedVariant, 1);
       onClose();
     }
   };

@@ -2,6 +2,7 @@ import { ProductCard } from "@/components/shop/ProductCard";
 import { ShopSidebar } from "@/components/shop/ShopSidebar";
 import { searchProducts, getAllCategories } from "@/lib/search";
 import { CategorySlug } from "@/types";
+import { Suspense } from "react";
 
 export const metadata = {
   title: "Shop All Gear",
@@ -36,17 +37,13 @@ export default async function ShopPage({
     getAllCategories()
   ]);
 
-  // Convert categories string array to the format Sidebar expects
-  const sidebarCategories = categories.map(cat => ({
-    name: cat.charAt(0).toUpperCase() + cat.slice(1),
-    slug: cat
-  }));
-
   return (
     <div className="flex-1 bg-bottle-green text-white pt-32 pb-32">
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="flex flex-col md:flex-row gap-12 lg:gap-16">
-          <ShopSidebar categories={sidebarCategories} />
+          <Suspense fallback={<div className="w-64 h-96 bg-black/10 animate-pulse border border-white/5" />}>
+            <ShopSidebar categories={categories} />
+          </Suspense>
           
           <div className="flex-1">
             <div className="mb-12 border-b border-white/10 pb-8 flex flex-col md:flex-row justify-between items-end gap-6">

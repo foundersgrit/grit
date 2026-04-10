@@ -45,6 +45,9 @@ export interface Order {
   status: OrderStatus;
   total: number;
   itemCount: number;
+  items: { name: string; image: string }[];
+  shippingAddress: { city: string };
+  createdAt: any;
 }
 
 export interface WishlistItem {
@@ -78,10 +81,13 @@ export interface LoyaltyStatus {
   totalXP: number;
   currentTierXP: number;
   nextTierThreshold: number;
+  progressPercentage: number;
+  pointsToNextTier: number;
   streakDays: number;
   longestStreak: number;
   achievements: Achievement[];
   challenges: Challenge[];
+  milestones: string[];
 }
 
 export interface ReferralReward {

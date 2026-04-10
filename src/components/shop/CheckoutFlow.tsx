@@ -7,8 +7,9 @@ import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useToast } from "@/components/providers/ToastProvider";
-import { Bolt, CheckCircle } from "@mui/icons-material";
+import { Bolt, CheckCircle, CheckCircleOutline } from "@mui/icons-material";
 import { useUserContext } from "@/components/providers/UserProvider";
+import { ReferralReward } from "@/types";
 
 type Step = 1 | 2 | 3;
 
@@ -49,7 +50,7 @@ export function CheckoutFlow() {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   // Calculate Adjusted Total
-  const availableRewards = referral?.referralRewards.filter(r => !r.used) || [];
+  const availableRewards = referral?.referralRewards.filter((r: ReferralReward) => !r.used) || [];
   const rewardDiscount = appliedRewards.length * 200;
   const initialBurden = initialTotal - rewardDiscount;
   
@@ -449,7 +450,7 @@ export function CheckoutFlow() {
                    <div className="mt-8 pt-8 border-t border-white/5">
                       <h3 className="font-structural text-sm uppercase tracking-widest text-white mb-6">Apply Recruitment Credits</h3>
                       <div className="grid gap-4">
-                         {availableRewards.map(reward => (
+                         {availableRewards.map((reward: ReferralReward) => (
                             <button 
                                key={reward.id}
                                onClick={() => {

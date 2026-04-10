@@ -1,13 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { Search, Person, ShoppingCart, Menu, Close } from "@mui/icons-material";
+import { Search, Person, ShoppingCart, Menu, Close, PersonOutline } from "@mui/icons-material";
+import { useAuth } from "@/components/providers/AuthProvider";
 import { motion, AnimatePresence, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import { useCart } from "@/components/providers/CartContext";
 import { useState, useEffect, useRef } from "react";
 import { NotificationPanel } from "./NotificationPanel";
 
 export function Header() {
+  const { user } = useAuth();
   const { itemCount } = useCart();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
