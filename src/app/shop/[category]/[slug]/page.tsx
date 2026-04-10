@@ -1,16 +1,19 @@
-import { MOCK_PRODUCTS } from "@/lib/data";
 import { ProductDetail } from "@/components/shop/ProductDetail";
+import { ReviewSection } from "@/components/shop/ReviewSection";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { notFound } from "next/navigation";
 import { CategorySlug } from "@/types";
+import { getProductBySlug, searchProducts } from "@/lib/search";
 
 interface ProductPageProps {
   params: Promise<{ category: CategorySlug; slug: string }>;
 }
 
+export const revalidate = 60;
+
 export async function generateMetadata({ params }: ProductPageProps) {
   const { slug } = await params;
-  const product = MOCK_PRODUCTS.find(p => p.slug === slug);
+  const product = await getProductBySlug(slug);
   if (!product) return { title: "Product Not Found - GRIT" };
   
   return {
@@ -19,9 +22,17 @@ export async function generateMetadata({ params }: ProductPageProps) {
   };
 }
 
+export async function generateStaticParams() {
+  const products = await searchProducts({});
+  return products.map((product) => ({
+    category: product.category,
+    slug: product.slug,
+  }));
+}
+
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
-  const product = MOCK_PRODUCTS.find(p => p.slug === slug);
+  const product = await getProductBySlug(slug);
   
   if (!product) {
     notFound();
@@ -54,25 +65,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
       <div className="container mx-auto px-4 max-w-7xl">
         <ProductDetail product={product} />
         
-        {/* Reviews Section Placeholder */}
-        <section className="mt-32 border-t border-white/10 pt-24 text-white">
-          <div className="max-w-4xl">
-            <h2 className="font-structural text-3xl uppercase tracking-tighter mb-12">Customer Feedback</h2>
-            <div className="space-y-12">
-               {[1, 2].map(r => (
-                 <div key={r} className="border-b border-white/5 pb-12">
-                   <div className="flex items-center gap-4 mb-4">
-                     <span className="font-structural text-wattle">★★★★★</span>
-                     <span className="font-structural text-sm uppercase tracking-widest">Verified Striver</span>
-                   </div>
-                   <p className="font-editorial text-lg text-gray-300 leading-relaxed italic mb-4">
-                     {r === 1 ? "The vertical weave isn't just marketing. It holds up under high abrasion on the platform. The best kit I've earned so far." : "Minimalist design with extreme durability. A rare combination in today's market."}
-                   </p>
-                   <span className="font-structural text-xs uppercase tracking-widest text-gray-500">October {12 - r}, 2026</span>
-                 </div>
-               ))}
-            </div>
-          </div>
+        {/* Live Reviews System (Section C1) */}
+        <section id="reviews" className="mt-40">
+           <ReviewSection productId={product.id} />
         </section>
       </div>
     </div>

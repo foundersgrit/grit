@@ -1,6 +1,7 @@
-import { MOCK_PRODUCTS, CATEGORIES } from "@/lib/data";
 import { ProductCard } from "@/components/shop/ProductCard";
 import { ShopSidebar } from "@/components/shop/ShopSidebar";
+import { searchProducts, getAllCategories } from "@/lib/search";
+import { CategorySlug } from "@/types";
 
 export const metadata = {
   title: "Shop All Gear",
@@ -13,61 +14,58 @@ export const metadata = {
   }
 };
 
+export const revalidate = 60; // Revalidate every 60 seconds
+
 export default async function ShopPage({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const params = await searchParams;
-  const sizeFilter = params.size as string;
-  const colorFilter = params.color as string;
-  const sortFilter = params.sort as string;
+  const categoryFilter = params.category as CategorySlug;
+  const sortFilter = params.sort as any;
+  const searchTerm = params.q as string;
 
+  // Parallel fetch products and categories from Firestore
+  const [products, categories] = await Promise.all([
+    searchProducts({
+      category: categoryFilter,
+      sortBy: sortFilter,
+      searchTerm: searchTerm
+    }),
+    getAllCategories()
+  ]);
 
-  let filteredProducts = [...MOCK_PRODUCTS];
-
-  if (sizeFilter) {
-    filteredProducts = filteredProducts.filter((p) => 
-      p.variants.some((v) => v.size === sizeFilter)
-    );
-  }
-
-  if (colorFilter) {
-    filteredProducts = filteredProducts.filter((p) => 
-      p.variants.some((v) => v.color.toLowerCase().replace(" ", "-") === colorFilter)
-    );
-  }
-
-  if (sortFilter === "price-low") {
-    filteredProducts.sort((a, b) => a.price - b.price);
-  } else if (sortFilter === "price-high") {
-    filteredProducts.sort((a, b) => b.price - a.price);
-  }
+  // Convert categories string array to the format Sidebar expects
+  const sidebarCategories = categories.map(cat => ({
+    name: cat.charAt(0).toUpperCase() + cat.slice(1),
+    slug: cat
+  }));
 
   return (
     <div className="flex-1 bg-bottle-green text-white pt-32 pb-32">
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="flex flex-col md:flex-row gap-12 lg:gap-16">
-          <ShopSidebar categories={CATEGORIES} />
+          <ShopSidebar categories={sidebarCategories} />
           
           <div className="flex-1">
             <div className="mb-12 border-b border-white/10 pb-8 flex flex-col md:flex-row justify-between items-end gap-6">
               <div>
                 <h1 className="font-structural text-4xl md:text-6xl uppercase tracking-tighter mb-4 leading-none">
-                  All Gear
+                  {categoryFilter ? (categoryFilter.charAt(0).toUpperCase() + categoryFilter.slice(1)) : "All Gear"}
                 </h1>
                 <p className="font-editorial text-gray-400 max-w-xl">
                   Tools for the grind. Every piece in this collection is reinforced at every failure point and tested strictly by actual effort.
                 </p>
               </div>
               <span className="font-structural text-sm text-gray-500 uppercase tracking-widest whitespace-nowrap">
-                {filteredProducts.length} Products
+                {products.length} Products
               </span>
             </div>
 
-            {filteredProducts.length > 0 ? (
+            {products.length > 0 ? (
               <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
-                {filteredProducts.map((product) => (
+                {products.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
               </div>

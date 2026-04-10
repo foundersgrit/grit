@@ -4,23 +4,24 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint"
   },
   "dependencies": {
-    "@auth/prisma-adapter": "^2.11.1",
+    "@ducanh2912/next-pwa": "^10.2.9",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^6.4.6",
     "@mui/material": "^6.4.6",
-    "@prisma/client": "^7.7.0",
     "clsx": "^2.1.1",
+    "firebase": "^12.12.0",
+    "firebase-admin": "^13.8.0",
+    "firebase-functions": "^7.2.5",
     "framer-motion": "^12.38.0",
     "motion-dom": "^12.38.0",
     "motion-utils": "^12.36.0",
     "next": "16.2.2",
-    "next-auth": "^4.24.13",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "tailwind-merge": "^2.6.0"
@@ -32,7 +33,6 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.2",
-    "prisma": "^7.7.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

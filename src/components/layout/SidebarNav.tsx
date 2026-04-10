@@ -1,9 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { signOut } from "next-auth/react";
-import { Button } from "@/components/ui/Button";
+import { usePathname, useRouter } from "next/navigation";
+import { useAuth } from "@/components/providers/AuthProvider";
 
 const NAV_ITEMS = [
   { href: "/account/profile", label: "Profile" },
@@ -14,9 +13,21 @@ const NAV_ITEMS = [
 
 export function SidebarNav() {
   const pathname = usePathname();
+  const router = useRouter();
+  const { logout } = useAuth();
 
   // Don't show sidebar on login page
   if (pathname === "/account/login") return null;
+
+  const handleSignOut = async () => {
+    try {
+      await logout();
+      router.push("/");
+      router.refresh();
+    } catch (error) {
+      console.error("Sign out error:", error);
+    }
+  };
 
   return (
     <aside className="w-full md:w-64 shrink-0 font-structural">
@@ -37,7 +48,7 @@ export function SidebarNav() {
           );
         })}
         <button 
-          onClick={() => signOut({ callbackUrl: '/' })}
+          onClick={handleSignOut}
           className="text-left text-lg uppercase tracking-wide text-gray-400 hover:text-white pl-4 border-l-2 border-transparent transition-colors mt-8"
         >
           Sign Out

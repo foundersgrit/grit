@@ -23,11 +23,17 @@ export interface ArenaEntry {
   date: string;
 }
 
-export interface User {
+export interface UserProfile {
   id: string;
   email: string;
   name: string;
-  shippingAddress?: string;
+  phone?: string;
+  addresses?: string[];
+  avatarUrl?: string;
+  createdAt: string;
+  updatedAt: string;
+  loyalty?: LoyaltyStatus;
+  referral?: UserReferral;
 }
 
 export type OrderStatus = "Processing" | "Shipped" | "Delivered";
@@ -51,11 +57,82 @@ export interface WishlistItem {
 
 export type LoyaltyTier = "Foundation" | "Endurance" | "Arena" | "Iron Will";
 
+export interface Achievement {
+  id: string;
+  name: string;
+  description: string;
+  earnedAt: string;
+  xpAwarded: number;
+}
+
+export interface Challenge {
+  challengeId: string;
+  status: "active" | "completed" | "expired";
+  progress: number; // 0-100
+  startedAt: string;
+  completedAt?: string;
+}
+
 export interface LoyaltyStatus {
   currentTier: LoyaltyTier;
-  pointsToNextTier: number;
-  progressPercentage: number;
-  milestones: string[];
+  totalXP: number;
+  currentTierXP: number;
+  nextTierThreshold: number;
+  streakDays: number;
+  longestStreak: number;
+  achievements: Achievement[];
+  challenges: Challenge[];
+}
+
+export interface ReferralReward {
+  id: string;
+  type: "discount" | "store-credit";
+  amount: number;
+  currency: string;
+  earnedAt: string;
+  used: boolean;
+  orderId?: string;
+}
+
+export interface UserReferral {
+  referralCode: string;
+  referralLink: string;
+  referralsCompleted: number;
+  referralRewards: ReferralReward[];
+  referredBy?: string;
+}
+
+export interface ReferralRecord {
+  id: string;
+  referrerUid: string;
+  referredUid: string;
+  referredEmail: string;
+  status: "pending" | "registered" | "completed";
+  createdAt: string;
+  completedAt?: string;
+}
+
+export interface GiftCardTransaction {
+  orderId: string;
+  amountUsed: number;
+  date: string;
+}
+
+export interface GiftCard {
+  id: string;
+  code: string;
+  purchaserUid: string;
+  recipientEmail: string;
+  recipientName: string;
+  personalMessage?: string;
+  amount: number;
+  currency: string;
+  balance: number;
+  status: "active" | "fully-redeemed" | "expired";
+  purchasedAt: string;
+  expiresAt: string;
+  redeemedBy?: string;
+  transactions: GiftCardTransaction[];
 }
 
 export type CategorySlug = "tops" | "bottoms" | "outerwear" | "baselayers" | "accessories" | "limited-editions";
@@ -97,5 +174,12 @@ export interface CartItem {
   quantity: number;
   selectedSize: string;
   selectedColor: string;
+  bundleId?: string;
+  bundleName?: string;
+}
+
+export interface Cart {
+  items: CartItem[];
+  updatedAt: string;
 }
 

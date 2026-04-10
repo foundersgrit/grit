@@ -1,16 +1,27 @@
 import Image from "next/image";
-import Link from "next/link";
 import { Button } from "@/components/ui/Button";
-import { MOCK_JOURNAL_ENTRIES } from "@/lib/data";
+import { fetchJournalEntries } from "@/lib/search";
 
 export const metadata = {
   title: "Journal - GRIT",
   description: "Evidence of work. Editorial content and stories.",
 };
 
-export default function JournalPage() {
-  const featuredArticle = MOCK_JOURNAL_ENTRIES[0];
-  const regularArticles = MOCK_JOURNAL_ENTRIES.slice(1);
+export const revalidate = 3600; // Revalidate every hour
+
+export default async function JournalPage() {
+  const entries = await fetchJournalEntries();
+  
+  if (!entries || entries.length === 0) {
+    return (
+      <main className="min-h-screen bg-dark-slate text-white flex items-center justify-center">
+        <p className="font-editorial text-xl text-gray-400">The journal is currently blank. The work continues.</p>
+      </main>
+    );
+  }
+
+  const featuredArticle = entries[0];
+  const regularArticles = entries.slice(1);
 
   return (
     <main className="min-h-screen bg-dark-slate text-white selection:bg-khaki selection:text-dark-slate">

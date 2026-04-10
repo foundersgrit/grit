@@ -2,54 +2,99 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { Order, WishlistItem, LoyaltyStatus } from "@/types";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/components/providers/AuthProvider";
+import { db } from "@/lib/firebase/config";
+import { collection, query, where, onSnapshot, doc, orderBy } from "firebase/firestore";
 
 interface UserContextType {
   orders: Order[];
   wishlist: WishlistItem[];
   loyalty: LoyaltyStatus | null;
+  referral: UserReferral | null;
   isLoading: boolean;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
-  const { data: session, status } = useSession();
+  const { user, loading: authLoading } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
   const [wishlist, setWishlist] = useState<WishlistItem[]>([]);
   const [loyalty, setLoyalty] = useState<LoyaltyStatus | null>(null);
+  const [referral, setReferral] = useState<UserReferral | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (status === "loading") return;
+    if (authLoading) return;
 
-    if (session?.user) {
-      // Load mock user data
-      setOrders([
-        { id: "o-1", orderNumber: "ORD-99321", date: "Oct 12, 2026", status: "Delivered", total: 185.00, itemCount: 2 },
-        { id: "o-2", orderNumber: "ORD-99540", date: "Oct 01, 2026", status: "Processing", total: 65.00, itemCount: 1 }
-      ]);
-      setWishlist([
-        { id: "w-1", productId: "p-1", name: "Endurance Tee V2", price: 45.00, image: "/images/journal_texture_1775667592289.png" },
-        { id: "w-2", productId: "p-3", name: "Heavyweight Iron Pants", price: 115.00, image: "/images/arena_texture_1775667573740.png" }
-      ]);
-      setLoyalty({
-        currentTier: "Endurance",
-        pointsToNextTier: 250,
-        progressPercentage: 65,
-        milestones: ["First Purchase", "Entered The Arena: 30-Day Protocol", "1 Year Anniversary"]
-      });
-    } else {
-      setOrders([]);
-      setWishlist([]);
-      setLoyalty(null);
+    if (!user) {
+      setTimeout(() => {
+        setOrders([]);
+        setWishlist([]);
+        setLoyalty(null);
+        setReferral(null);
+        setIsLoading(false);
+      }, 0);
+      return;
     }
-    
+
+    setIsLoading(true);
+
+    // 1. Subscribe to Orders
+    const ordersQuery = query(
+      collection(db, "orders"), 
+      where("userId", "==", user.uid),
+      orderBy("createdAt", "desc")
+    );
+    const unsubscribeOrders = onSnapshot(ordersQuery, (snapshot) => {
+      const ordersData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as Order[];
+      setOrders(ordersData);
+    }, (error) => {
+      console.error("Firestore Orders subscription error:", error);
+    });
+
+    // 2. Subscribe to Wishlist
+    const wishlistCollection = collection(db, "users", user.uid, "wishlist");
+    const unsubscribeWishlist = onSnapshot(wishlistCollection, (snapshot) => {
+      const wishlistData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as WishlistItem[];
+      setWishlist(wishlistData);
+    }, (error) => {
+      console.error("Firestore Wishlist subscription error:", error);
+    });
+
+    // 3. Subscribe to Profile/Loyalty/Referral
+    const userDocRef = doc(db, "users", user.uid);
+    const unsubscribeProfile = onSnapshot(userDocRef, (doc) => {
+      if (doc.exists()) {
+        const data = doc.data();
+        if (data.loyalty) {
+          setLoyalty(data.loyalty as LoyaltyStatus);
+        }
+        if (data.referral) {
+          setReferral(data.referral as UserReferral);
+        }
+      }
+    }, (error) => {
+      console.error("Firestore Profile subscription error:", error);
+    });
+
     setIsLoading(false);
-  }, [session, status]);
+
+    return () => {
+      unsubscribeOrders();
+      unsubscribeWishlist();
+      unsubscribeProfile();
+    };
+  }, [user, authLoading]);
 
   return (
-    <UserContext.Provider value={{ orders, wishlist, loyalty, isLoading }}>
+    <UserContext.Provider value={{ orders, wishlist, loyalty, referral, isLoading }}>
       {children}
     </UserContext.Provider>
   );

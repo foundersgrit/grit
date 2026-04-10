@@ -1,16 +1,18 @@
-import { MOCK_PRODUCTS, CATEGORIES } from "@/lib/data";
 import { ProductCard } from "@/components/shop/ProductCard";
 import { ShopSidebar } from "@/components/shop/ShopSidebar";
 import { notFound } from "next/navigation";
 import { CategorySlug } from "@/types";
+import { searchProducts, getCategoryBySlug, getAllCategories } from "@/lib/search";
 
 interface CategoryPageProps {
   params: Promise<{ category: CategorySlug }>;
 }
 
+export const revalidate = 60;
+
 export async function generateMetadata({ params }: CategoryPageProps) {
   const { category } = await params;
-  const categoryData = CATEGORIES.find(c => c.slug === category);
+  const categoryData = await getCategoryBySlug(category);
   if (!categoryData) return { title: "Category Not Found - GRIT" };
   
   return {
@@ -19,21 +21,32 @@ export async function generateMetadata({ params }: CategoryPageProps) {
   };
 }
 
+export async function generateStaticParams() {
+  const categories = await getAllCategories();
+  return categories.map((category) => ({
+    category: category.slug,
+  }));
+}
+
 export default async function CategoryPage({ params }: CategoryPageProps) {
   const { category } = await params;
-  const categoryData = CATEGORIES.find(c => c.slug === category);
+  
+  // Parallel fetch category data, products in this category, and all categories for sidebar
+  const [categoryData, categoryProducts, allCategories] = await Promise.all([
+    getCategoryBySlug(category),
+    searchProducts({ category }),
+    getAllCategories()
+  ]);
   
   if (!categoryData) {
     notFound();
   }
 
-  const categoryProducts = MOCK_PRODUCTS.filter(p => p.category === category);
-
   return (
     <div className="flex-1 bg-bottle-green text-white pt-32 pb-32">
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="flex flex-col md:flex-row gap-12 lg:gap-16">
-          <ShopSidebar categories={CATEGORIES} />
+          <ShopSidebar categories={allCategories} />
           
           <div className="flex-1">
             <div className="mb-12 border-b border-white/10 pb-8 flex flex-col md:flex-row justify-between items-end gap-6">

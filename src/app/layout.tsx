@@ -1,8 +1,12 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.gritapparel.com";
+
+import { ChatBubble } from "@mui/icons-material";
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.gritapparel.com"),
+  metadataBase: new URL(siteUrl),
   title: {
     default: "GRIT | Built For Those Who Stay",
     template: "%s | GRIT — Built For Those Who Stay"
@@ -20,7 +24,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     alternateLocale: "bn_BD",
-    url: "https://www.gritapparel.com",
+    url: siteUrl,
     siteName: "GRIT",
     images: [
       {
@@ -37,23 +41,43 @@ export const metadata: Metadata = {
     description: "Resilience-led performance apparel built to endure.",
     images: ["/images/brand_og_default_grit_1775671994429.png"],
     creator: "@grit"
-  }
+  },
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "GRIT Gear",
+  },
 };
 
-export const viewport = {
-  themeColor: "#0A3625"
+export const viewport: Viewport = {
+  themeColor: "#0A3625",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
-
-
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
+import { Suspense } from "react";
+import dynamic from "next/dynamic";
 import { AuthProvider } from "@/components/providers/AuthProvider";
 import { UserProvider } from "@/components/providers/UserProvider";
 import { CartProvider } from "@/components/providers/CartContext";
-import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
 import { ToastProvider } from "@/components/providers/ToastProvider";
+import { ComparisonProvider } from "@/components/providers/ComparisonContext";
+import { FirebaseAnalytics } from "@/components/analytics/FirebaseAnalytics";
 import { CartDrawer } from "@/components/shop/CartDrawer";
+import { PageTransition } from "@/components/layout/PageTransition";
+
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
+import { LiveChat } from "@/components/support/LiveChat";
+import { ComparisonBar } from "@/components/shop/ComparisonBar";
+import { SocialProof } from "@/components/shop/SocialProof";
+import { BottomNav } from "@/components/layout/BottomNav";
+import { CustomCursor } from "@/components/ui/CustomCursor";
+import { WelcomeFlow } from "@/components/onboarding/WelcomeFlow";
+import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
 
 export default function RootLayout({
   children,
@@ -74,13 +98,49 @@ export default function RootLayout({
           <AuthProvider>
             <CartProvider>
               <UserProvider>
-                <Header />
-                <CartDrawer />
-                <main id="main-content" className="flex-1 w-full flex flex-col">
-                  {children}
-                </main>
-                <WhatsAppButton />
-                <Footer />
+                <ComparisonProvider>
+                  <Suspense fallback={null}>
+                    <FirebaseAnalytics />
+                  </Suspense>
+                  <Header />
+                  <CartDrawer />
+                  <main id="main-content" className="flex-1 w-full flex flex-col">
+                    <PageTransition>
+                      {children}
+                    </PageTransition>
+                  </main>
+                  <WhatsAppButton />
+                  <LiveChat />
+                  <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{
+                      __html: JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "Organization",
+                        "name": "GRIT",
+                        "url": "https://www.gritapparel.com",
+                        "logo": "https://www.gritapparel.com/images/brand_og_default_grit_1775671994429.png",
+                        "sameAs": [
+                          "https://www.instagram.com/grit",
+                          "https://www.facebook.com/grit"
+                        ],
+                        "contactPoint": {
+                          "@type": "ContactPoint",
+                          "telephone": "+880-XXXXXXXXXX",
+                          "contactType": "customer service",
+                          "areaServed": "BD",
+                          "availableLanguage": ["English", "Bengali"]
+                        }
+                      })
+                    }}
+                  />
+                  <Footer />
+                  <ComparisonBar />
+                  <SocialProof />
+                  <BottomNav />
+                  <CustomCursor />
+                  <WelcomeFlow />
+                </ComparisonProvider>
               </UserProvider>
             </CartProvider>
           </AuthProvider>

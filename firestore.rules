@@ -1,0 +1,90 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. DEFAULT DENY
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+    
+    function isAdmin() {
+      // Admin status checked via custom claims set in Firebase Admin SDK
+      return isSignedIn() && request.auth.token.admin == true;
+    }
+
+    // Products, Categories, Journal, Arena: Public read, Admin write
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /journal/{articleId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /arena/{storyId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // User data: Owner only
+    match /users/{userId} {
+      allow read, write: if isOwner(userId);
+      
+      match /wishlist/{productId} {
+        allow read, write: if isOwner(userId);
+      }
+      
+      match /notifications/{notificationId} {
+        allow read: if isOwner(userId);
+        allow write: if isAdmin();
+      }
+    }
+
+    // Carts: Owner only
+    match /carts/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+
+    // Orders: User read own, Create via Cloud Function (not direct write)
+    match /orders/{orderId} {
+      allow read: if isOwner(resource.data.userId);
+      allow create: if false; // Must be created via server-side logic/Cloud Functions
+      allow update, delete: if isAdmin();
+      
+      match /timeline/{eventId} {
+        allow read: if isOwner(get(/databases/$(database)/documents/orders/$(orderId)).data.userId);
+        allow write: if isAdmin();
+      }
+    }
+
+    // Repairs: Owner create/read, Admin update
+    match /repairs/{repairId} {
+      // User can create their own repair document
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow read: if isOwner(resource.data.userId);
+      allow update: if isAdmin();
+    }
+
+    // Contact messages: Public create, Admin read
+    match /contactMessages/{messageId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+  }
+}

@@ -1,6 +1,8 @@
-import { JournalEntry, ArenaEntry, Category, Product } from "@/types";
+import { adminDb } from './admin';
 
-export const MOCK_JOURNAL_ENTRIES: JournalEntry[] = [
+// Inlined mock data for initial seeding only. 
+// For production, these arrays should be empty or moved to a secure JSON repository.
+const MOCK_JOURNAL_ENTRIES = [
   {
     id: "j-1",
     title: "The Friction Required for Growth",
@@ -36,7 +38,7 @@ export const MOCK_JOURNAL_ENTRIES: JournalEntry[] = [
   }
 ];
 
-export const MOCK_ARENA_ENTRIES: ArenaEntry[] = [
+const MOCK_ARENA_ENTRIES = [
   {
     id: "a-1",
     memberName: "Alex Vance",
@@ -63,14 +65,14 @@ export const MOCK_ARENA_ENTRIES: ArenaEntry[] = [
   }
 ];
 
-export const CATEGORIES: Category[] = [
+const CATEGORIES = [
   { id: "cat-1", name: "Tops", slug: "tops", description: "Performance gear designed for movement and structural endurance." },
   { id: "cat-2", name: "Bottoms", slug: "bottoms", description: "Reinforced lower-body gear built for repetition and protection." },
   { id: "cat-3", name: "Outerwear", slug: "outerwear", description: "Heavyweight protection for the harshest environments." },
   { id: "cat-4", name: "Accessories", slug: "accessories", description: "Tools for your daily grind." }
 ];
 
-export const MOCK_PRODUCTS: Product[] = [
+const MOCK_PRODUCTS = [
   {
     id: "prod-1",
     name: "The Endurance Tee",
@@ -138,3 +140,71 @@ export const MOCK_PRODUCTS: Product[] = [
   }
 ];
 
+export async function seedFirestore() {
+  console.log('Starting seed process...');
+
+  try {
+    // 1. Seed Categories
+    const categoriesSnapshot = await adminDb.collection('categories').get();
+    if (categoriesSnapshot.empty) {
+      console.log('Seeding categories...');
+      for (const category of CATEGORIES) {
+        await adminDb.collection('categories').doc(category.slug).set(category);
+      }
+    } else {
+      console.log('Categories already seeded, skipping.');
+    }
+
+    // 2. Seed Products
+    const productsSnapshot = await adminDb.collection('products').get();
+    if (productsSnapshot.empty) {
+      console.log('Seeding products...');
+      for (const product of MOCK_PRODUCTS) {
+        const searchTerms = product.name.toLowerCase().split(' ');
+        await adminDb.collection('products').doc(product.slug).set({
+          ...product,
+          searchTerms,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        });
+      }
+    } else {
+      console.log('Products already seeded, skipping.');
+    }
+
+    // 3. Seed Journal Entries
+    const journalSnapshot = await adminDb.collection('journal').get();
+    if (journalSnapshot.empty) {
+      console.log('Seeding journal...');
+      for (const entry of MOCK_JOURNAL_ENTRIES) {
+        await adminDb.collection('journal').doc(entry.slug).set({
+          ...entry,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        });
+      }
+    } else {
+      console.log('Journal already seeded, skipping.');
+    }
+
+    // 4. Seed Arena Entries
+    const arenaSnapshot = await adminDb.collection('arena').get();
+    if (arenaSnapshot.empty) {
+      console.log('Seeding arena...');
+      for (const entry of MOCK_ARENA_ENTRIES) {
+        await adminDb.collection('arena').doc(entry.id).set({
+          ...entry,
+          publishedAt: new Date().toISOString(),
+        });
+      }
+    } else {
+      console.log('Arena already seeded, skipping.');
+    }
+
+    console.log('Seed process completed successfully.');
+    return { success: true, message: 'Seeding completed.' };
+  } catch (error) {
+    console.error('Error seeding Firestore:', error);
+    throw error;
+  }
+}

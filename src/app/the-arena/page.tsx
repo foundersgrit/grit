@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/Button";
-import { MOCK_ARENA_ENTRIES } from "@/lib/data";
+import { fetchArenaEntries } from "@/lib/search";
 
 export const metadata = {
   title: "The Arena",
@@ -13,8 +13,11 @@ export const metadata = {
   }
 };
 
+export const revalidate = 3600; // Revalidate every hour
 
-export default function TheArenaPage() {
+export default async function TheArenaPage() {
+  const entries = await fetchArenaEntries();
+
   return (
     <main className="min-h-screen bg-dark-slate text-white selection:bg-wattle selection:text-bottle-green">
       {/* Header Topic */}
@@ -53,7 +56,7 @@ export default function TheArenaPage() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {MOCK_ARENA_ENTRIES.map((entry) => (
+            {entries.map((entry) => (
               <article 
                 key={entry.id} 
                 className="group relative bg-bottle-green border border-white/10 overflow-hidden transition-all hover:border-wattle/50"

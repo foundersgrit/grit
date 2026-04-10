@@ -10,7 +10,10 @@ export default function robots(): MetadataRoute.Robots {
       disallow: [
         "/account/",
         "/checkout/",
+        "/cart",
         "/api/",
+        "/admin/",
+        "/_next/",
       ],
     },
     sitemap: `${baseUrl}/sitemap.xml`,
