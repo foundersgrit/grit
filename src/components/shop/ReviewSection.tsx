@@ -3,18 +3,17 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { Star, Verified, ThumbUpAltOutlined } from "@mui/icons-material";
-import { query, where, orderBy, onSnapshot, addDoc, serverTimestamp } from "firebase/firestore";
-import { reviewsRef } from "@/lib/firebase/collections";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { Button } from "@/components/ui/Button";
 import { useToast } from "@/components/providers/ToastProvider";
 import { motion, AnimatePresence } from "framer-motion";
+import { createClient } from "@/utils/supabase/client";
 
 interface Review {
   id: string;
   user: string;
   rating: number;
-  date: any;
+  date: string;
   comment: string;
   isVerified: boolean;
   images: string[];
@@ -33,26 +32,46 @@ export function ReviewSection({ productId }: ReviewSectionProps) {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [newReview, setNewReview] = useState({ rating: 5, comment: "" });
 
-  // Sync reviews
+  const supabase = createClient();
+
+  const fetchReviews = async () => {
+    const { data, error } = await supabase
+      .from('reviews')
+      .select('*, profiles(name)')
+      .eq('product_id', productId)
+      .order('created_at', { ascending: false });
+
+    if (data) {
+      setReviews(data.map((r: any) => ({
+        id: r.id,
+        user: r.profiles?.name || "Anonymous Operative",
+        rating: r.rating,
+        date: new Date(r.created_at).toLocaleDateString(),
+        comment: r.comment,
+        isVerified: r.is_verified,
+        images: [],
+        helpful: r.helpful_count || 0
+      })));
+    }
+    setLoading(false);
+  };
+
   useEffect(() => {
-    const q = query(
-      reviewsRef,
-      where("productId", "==", productId),
-      orderBy("date", "desc")
-    );
+    fetchReviews();
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        // Format date from Firestore timestamp
-        date: doc.data().date?.toDate().toLocaleDateString() || "Just now"
-      })) as Review[];
-      setReviews(data);
-      setLoading(false);
-    });
+    // Subscribe to new reviews
+    const channel = supabase
+      .channel(`reviews:${productId}`)
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'reviews', filter: `product_id=eq.${productId}` },
+        () => fetchReviews()
+      )
+      .subscribe();
 
-    return () => unsubscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [productId]);
 
   const handleSubmitReview = async () => {
@@ -66,23 +85,24 @@ export function ReviewSection({ productId }: ReviewSectionProps) {
     }
 
     try {
-      await addDoc(reviewsRef, {
-        productId,
-        userId: user.uid,
-        user: user.displayName || "Anonymous Operative",
-        rating: newReview.rating,
-        comment: newReview.comment,
-        date: serverTimestamp(),
-        isVerified: true, // Simplified for this implementation
-        images: [],
-        helpful: 0
-      });
+      const { error } = await supabase
+        .from('reviews')
+        .insert({
+          product_id: productId,
+          profile_id: user.id,
+          rating: newReview.rating,
+          comment: newReview.comment,
+          is_verified: true
+        });
+
+      if (error) throw error;
+      
       showToast("Evidence logged successfully.");
       setIsFormOpen(false);
       setNewReview({ rating: 5, comment: "" });
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      showToast("Telemetry failure. Try again.");
+      showToast(err.message || "Telemetry failure. Try again.");
     }
   };
 

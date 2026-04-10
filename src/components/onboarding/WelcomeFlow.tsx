@@ -4,8 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/Button";
 import { useAuth } from "@/components/providers/AuthProvider";
-import { db } from "@/lib/firebase/config";
-import { doc, updateDoc, getDoc } from "firebase/firestore";
+import { createClient } from "@/utils/supabase/client";
 import { Close, ChevronRight, GppGood, FitnessCenter, DirectionsRun, SelfImprovement } from "@mui/icons-material";
 
 export function WelcomeFlow() {
@@ -15,18 +14,20 @@ export function WelcomeFlow() {
   const [onboardingData, setOnboardingData] = useState({
     discipline: "",
     fitPreference: "",
-    referral: ""
   });
+  const supabase = createClient();
 
   useEffect(() => {
     async function checkFirstTime() {
       if (!user) return;
       
-      const userRef = doc(db, "users", user.uid);
-      const userSnap = await getDoc(userRef);
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("onboarding_complete")
+        .eq("id", user.id)
+        .single();
       
-      if (userSnap.exists() && !userSnap.data().onboardingComplete) {
-        // User logged in but hasn't finished onboarding
+      if (data && !data.onboarding_complete) {
         setIsOpen(true);
       }
     }
@@ -36,12 +37,15 @@ export function WelcomeFlow() {
 
   const handleFinish = async () => {
     if (user) {
-      const userRef = doc(db, "users", user.uid);
-      await updateDoc(userRef, {
-        ...onboardingData,
-        onboardingComplete: true,
-        onboardedAt: new Date().toISOString()
-      });
+      await supabase
+        .from("profiles")
+        .update({
+          discipline: onboardingData.discipline,
+          fit_preference: onboardingData.fitPreference,
+          onboarding_complete: true,
+          onboarded_at: new Date().toISOString()
+        })
+        .eq("id", user.id);
     }
     setIsOpen(false);
   };

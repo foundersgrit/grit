@@ -99,7 +99,7 @@ export function CheckoutFlow() {
     try {
       // Create the order payload
       const orderData = {
-        userId: user?.uid || "guest",
+        profile_id: user?.id || "guest",
         items: cart,
         shippingInfo,
         paymentInfo: {

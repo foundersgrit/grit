@@ -2,8 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/components/providers/AuthProvider";
-import { db } from "@/lib/firebase/config";
-import { collection, query, where, orderBy, onSnapshot, doc, updateDoc, writeBatch } from "firebase/firestore";
+import { createClient } from "@/utils/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
 import { Notifications, NotificationsNone, Bolt, DoneAll, Close, Campaign } from "@mui/icons-material";
 import Link from "next/link";
@@ -14,7 +13,7 @@ interface Notification {
   title: string;
   message: string;
   read: boolean;
-  createdAt: any;
+  createdAt: string;
   link?: string;
 }
 
@@ -24,6 +23,30 @@ export function NotificationPanel() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
 
+  const supabase = createClient();
+
+  const fetchNotifications = async () => {
+    if (!user) return;
+    const { data, error } = await supabase
+      .from('notifications')
+      .select('*')
+      .eq('profile_id', user.id)
+      .order('created_at', { ascending: false });
+
+    if (data) {
+      setNotifications(data.map((n: any) => ({
+        id: n.id,
+        type: n.type,
+        title: n.title,
+        message: n.message,
+        read: n.read,
+        createdAt: n.created_at,
+        link: n.link
+      })));
+      setUnreadCount(data.filter(n => !n.read).length);
+    }
+  };
+
   useEffect(() => {
     if (!user) {
       setNotifications([]);
@@ -31,37 +54,42 @@ export function NotificationPanel() {
       return;
     }
 
-    const q = query(
-      collection(db, "users", user.uid, "notifications"),
-      orderBy("createdAt", "desc")
-    );
+    fetchNotifications();
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as Notification[];
-      setNotifications(data);
-      setUnreadCount(data.filter(n => !n.read).length);
-    });
+    // Subscribe to new notifications
+    const channel = supabase
+      .channel(`notifications:${user.id}`)
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'notifications', filter: `profile_id=eq.${user.id}` },
+        () => fetchNotifications()
+      )
+      .subscribe();
 
-    return () => unsubscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [user]);
 
   const markAllRead = async () => {
     if (!user) return;
-    const batch = writeBatch(db);
-    notifications.forEach(n => {
-      if (!n.read) {
-        batch.update(doc(db, "users", user.uid, "notifications", n.id), { read: true });
-      }
-    });
-    await batch.commit();
+    const { error } = await supabase
+      .from('notifications')
+      .update({ read: true })
+      .eq('profile_id', user.id)
+      .eq('read', false);
+    
+    if (!error) fetchNotifications();
   };
 
   const markRead = async (id: string) => {
     if (!user) return;
-    await updateDoc(doc(db, "users", user.uid, "notifications", id), { read: true });
+    const { error } = await supabase
+      .from('notifications')
+      .update({ read: true })
+      .eq('id', id);
+    
+    if (!error) fetchNotifications();
   };
 
   return (
@@ -124,7 +152,7 @@ export function NotificationPanel() {
                         <div className="flex-1">
                           <div className="flex justify-between items-start mb-1">
                              <h4 className={`font-structural text-[10px] uppercase tracking-widest ${!n.read ? "text-white" : "text-gray-500"}`}>{n.title}</h4>
-                             <span className="text-[8px] font-mono text-gray-600 uppercase">{n.createdAt?.toDate ? new Date(n.createdAt.toDate()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Recently"}</span>
+                             <span className="text-[8px] font-mono text-gray-600 uppercase">{n.createdAt ? new Date(n.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Recently"}</span>
                           </div>
                           <p className="font-editorial text-xs text-gray-400 line-clamp-2 leading-relaxed">{n.message}</p>
                         </div>

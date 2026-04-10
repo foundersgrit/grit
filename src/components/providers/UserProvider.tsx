@@ -3,8 +3,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { Order, WishlistItem, LoyaltyStatus, UserReferral } from "@/types";
 import { useAuth } from "@/components/providers/AuthProvider";
-import { db } from "@/lib/firebase/config";
-import { collection, query, where, onSnapshot, doc, orderBy } from "firebase/firestore";
+import { createClient } from "@/utils/supabase/client";
 
 interface UserContextType {
   orders: Order[];
@@ -23,73 +22,81 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const [loyalty, setLoyalty] = useState<LoyaltyStatus | null>(null);
   const [referral, setReferral] = useState<UserReferral | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const supabase = createClient();
 
   useEffect(() => {
     if (authLoading) return;
 
     if (!user) {
-      setTimeout(() => {
-        setOrders([]);
-        setWishlist([]);
-        setLoyalty(null);
-        setReferral(null);
-        setIsLoading(false);
-      }, 0);
+      setOrders([]);
+      setWishlist([]);
+      setLoyalty(null);
+      setReferral(null);
+      setIsLoading(false);
       return;
     }
 
-    setIsLoading(true);
+    const hydrateUserData = async () => {
+      setIsLoading(true);
 
-    // 1. Subscribe to Orders
-    const ordersQuery = query(
-      collection(db, "orders"), 
-      where("userId", "==", user.uid),
-      orderBy("createdAt", "desc")
-    );
-    const unsubscribeOrders = onSnapshot(ordersQuery, (snapshot) => {
-      const ordersData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as Order[];
-      setOrders(ordersData);
-    }, (error) => {
-      console.error("Firestore Orders subscription error:", error);
-    });
+      // 1. Fetch Orders
+      const { data: ordersData } = await supabase
+        .from("orders")
+        .select("*, order_items(*)")
+        .eq("profile_id", user.id)
+        .order("created_at", { ascending: false });
+      
+      if (ordersData) setOrders(ordersData as any);
 
-    // 2. Subscribe to Wishlist
-    const wishlistCollection = collection(db, "users", user.uid, "wishlist");
-    const unsubscribeWishlist = onSnapshot(wishlistCollection, (snapshot) => {
-      const wishlistData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as WishlistItem[];
-      setWishlist(wishlistData);
-    }, (error) => {
-      console.error("Firestore Wishlist subscription error:", error);
-    });
-
-    // 3. Subscribe to Profile/Loyalty/Referral
-    const userDocRef = doc(db, "users", user.uid);
-    const unsubscribeProfile = onSnapshot(userDocRef, (doc) => {
-      if (doc.exists()) {
-        const data = doc.data();
-        if (data.loyalty) {
-          setLoyalty(data.loyalty as LoyaltyStatus);
-        }
-        if (data.referral) {
-          setReferral(data.referral as UserReferral);
-        }
+      // 2. Fetch Wishlist
+      const { data: wishlistData } = await supabase
+        .from("wishlist_items")
+        .select("*, products(*)")
+        .eq("profile_id", user.id);
+      
+      if (wishlistData) {
+        setWishlist(wishlistData.map((item: any) => ({
+          id: item.id,
+          productId: item.product_id,
+          name: item.products.name,
+          price: item.products.price,
+          image: item.products.images[0]
+        })));
       }
-    }, (error) => {
-      console.error("Firestore Profile subscription error:", error);
-    });
 
-    setIsLoading(false);
+      // 3. Fetch Profile/Loyalty/Referral
+      const { data: profileData } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+      
+      if (profileData) {
+        if (profileData.loyalty) setLoyalty(profileData.loyalty as LoyaltyStatus);
+        if (profileData.referral) setReferral(profileData.referral as UserReferral);
+      }
+
+      setIsLoading(false);
+    };
+
+    hydrateUserData();
+
+    // 4. Realtime Subscriptions
+    const profileChannel = supabase
+      .channel(`profile:${user.id}`)
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'profiles', filter: `id=eq.${user.id}` },
+        (payload) => {
+          const data = payload.new as any;
+          if (data.loyalty) setLoyalty(data.loyalty);
+          if (data.referral) setReferral(data.referral);
+        }
+      )
+      .subscribe();
 
     return () => {
-      unsubscribeOrders();
-      unsubscribeWishlist();
-      unsubscribeProfile();
+      supabase.removeChannel(profileChannel);
     };
   }, [user, authLoading]);
 

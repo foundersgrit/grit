@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Product } from "@/types";
-import { productsRef } from "@/lib/firebase/collections";
-import { query, where, limit, getDocs } from "firebase/firestore";
+import { createClient } from "@/utils/supabase/client";
 import { ProductCard } from "@/components/shop/ProductCard";
 import { FadeIn, FadeInStagger } from "@/components/ui/FadeIn";
 
@@ -15,23 +14,21 @@ interface RelatedProductsProps {
 export function RelatedProducts({ currentProductId, category }: RelatedProductsProps) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const supabase = createClient();
 
   useEffect(() => {
     async function fetchRelated() {
       try {
-        const q = query(
-          productsRef,
-          where("category", "==", category),
-          limit(10) // Fetch a few more to filter out current
-        );
+        const { data, error } = await supabase
+          .from("products")
+          .select("*")
+          .eq("category_slug", category)
+          .neq("id", currentProductId)
+          .limit(4);
         
-        const querySnapshot = await getDocs(q);
-        const fetched = querySnapshot.docs
-          .map(doc => doc.data() as Product)
-          .filter(p => p.id !== currentProductId)
-          .slice(0, 4);
-
-        setProducts(fetched);
+        if (data) {
+          setProducts(data as Product[]);
+        }
       } catch (err) {
         console.error("Failed to fetch related gear:", err);
       } finally {

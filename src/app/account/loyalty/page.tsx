@@ -7,8 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { motion, AnimatePresence } from "framer-motion";
 import { Bolt, MilitaryTech, EmojiEvents, History, Checklist, Flare, ChevronRight, InfoOutlined } from "@mui/icons-material";
 import { useToast } from "@/components/providers/ToastProvider";
-import { functions } from "@/lib/firebase/config";
-import { httpsCallable } from "firebase/functions";
+import { claimDailyXP } from "@/app/actions/loyalty";
 
 export default function LoyaltyPage() {
   const { user } = useAuth();
@@ -19,9 +18,8 @@ export default function LoyaltyPage() {
   const handleClaimDaily = async () => {
     setIsClaiming(true);
     try {
-      const claim = httpsCallable(functions, 'claimDailyXP');
-      const result: any = await claim();
-      showToast(`Daily XP secured. +${result.data.xpAwarded} XP | Streak: ${result.data.streak} Days`);
+      const result = await claimDailyXP();
+      showToast(`Daily XP secured. +${result.xpAwarded} XP | Streak: ${result.streak} Days`);
     } catch (err: any) {
       showToast(err.message || "Claim attempt failed.");
     } finally {

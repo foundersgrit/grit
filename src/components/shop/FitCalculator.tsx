@@ -4,8 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/Button";
 import { useAuth } from "@/components/providers/AuthProvider";
-import { db } from "@/lib/firebase/config";
-import { doc, updateDoc } from "firebase/firestore";
+import { createClient } from "@/utils/supabase/client";
 import { Close, ChevronRight, ChevronLeft, Straighten } from "@mui/icons-material";
 
 interface FitCalculatorProps {
@@ -22,6 +21,7 @@ export function FitCalculator({ isOpen, onClose, onRecommend }: FitCalculatorPro
     weight: 70,  // kg
     fit: "regular" as "slim" | "regular" | "relaxed"
   });
+  const supabase = createClient();
 
   const nextStep = () => setStep(s => s + 1);
   const prevStep = () => setStep(s => s - 1);
@@ -50,11 +50,14 @@ export function FitCalculator({ isOpen, onClose, onRecommend }: FitCalculatorPro
     // Store in profile
     if (user) {
       try {
-        await updateDoc(doc(db, "users", user.uid), {
-          measurements: data,
-          recommendedSize: recommended,
-          updatedAt: new Date().toISOString()
-        });
+        await supabase
+          .from("profiles")
+          .update({
+            measurements: data,
+            recommended_size: recommended,
+            updated_at: new Date().toISOString()
+          })
+          .eq("id", user.id);
       } catch (err) {
         console.error("Failed to save measurements:", err);
       }

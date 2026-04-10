@@ -1,28 +1,19 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { 
-  User, 
-  onAuthStateChanged, 
-  signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword,
-  signOut,
-  GoogleAuthProvider,
-  signInWithPopup,
-  sendPasswordResetEmail,
-  UserCredential
-} from 'firebase/auth';
-import { auth, functions } from '@/lib/firebase/config';
-import { httpsCallable } from 'firebase/functions';
+import { User } from '@supabase/supabase-js';
+import { createClient } from '@/utils/supabase/client';
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  signIn: (email: string, pass: string) => Promise<UserCredential>;
-  signUp: (email: string, pass: string) => Promise<UserCredential>;
-  signInWithGoogle: () => Promise<UserCredential>;
+  signIn: (email: string, pass: string) => Promise<any>;
+  signUp: (email: string, pass: string) => Promise<any>;
+  signInWithGoogle: () => Promise<any>;
+  signInWithPhone: (phone: string) => Promise<any>;
+  verifyOtp: (phone: string, token: string) => Promise<any>;
   logout: () => Promise<void>;
-  resetPassword: (email: string) => Promise<void>;
+  resetPassword: (email: string) => Promise<any>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -30,48 +21,55 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const supabase = createClient();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setUser(user);
-      
-      if (user) {
-        // Get ID token and set session cookie via API
-        const idToken = await user.getIdToken();
-        await fetch('/api/auth/session', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ idToken }),
-        });
-
-        // REFERRAL CLAIMING LOGIC
-        const pendingRef = localStorage.getItem("grit_referral_code");
-        if (pendingRef) {
-          try {
-            const claim = httpsCallable(functions, 'claimReferral');
-            await claim({ referralCode: pendingRef });
-            localStorage.removeItem("grit_referral_code"); // Clear after claim attempt
-            console.log("Referral infiltration confirmed.");
-          } catch (refErr) {
-            console.error("Referral claim failure:", refErr);
-          }
-        }
-      } else {
-        // Clear session cookie
-        await fetch('/api/auth/session', { method: 'DELETE' });
-      }
-      
+    // Check active sessions and sets the user
+    const getInitialSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setUser(session?.user ?? null);
       setLoading(false);
-    });
+    };
 
-    return () => unsubscribe();
+    getInitialSession();
+
+    // Listen for changes on auth state (logged in, signed out, etc.)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (_event, session) => {
+        setUser(session?.user ?? null);
+        setLoading(false);
+      }
+    );
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  const signIn = (email: string, pass: string) => signInWithEmailAndPassword(auth, email, pass);
-  const signUp = (email: string, pass: string) => createUserWithEmailAndPassword(auth, email, pass);
-  const signInWithGoogle = () => signInWithPopup(auth, new GoogleAuthProvider());
-  const logout = () => signOut(auth);
-  const resetPassword = (email: string) => sendPasswordResetEmail(auth, email);
+  const signIn = (email: string, pass: string) => 
+    supabase.auth.signInWithPassword({ email, password: pass });
+
+  const signUp = (email: string, pass: string) => 
+    supabase.auth.signUp({ email, password: pass });
+
+  const signInWithGoogle = () => 
+    supabase.auth.signInWithOAuth({ 
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/account/profile`
+      }
+    });
+
+  const signInWithPhone = (phone: string) =>
+    supabase.auth.signInWithOtp({ phone });
+
+  const verifyOtp = (phone: string, token: string) =>
+    supabase.auth.verifyOtp({ phone, token, type: 'sms' });
+
+  const logout = async () => {
+    await supabase.auth.signOut();
+  };
+
+  const resetPassword = (email: string) => 
+    supabase.auth.resetPasswordForEmail(email);
 
   return (
     <AuthContext.Provider value={{ 
@@ -79,7 +77,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       loading, 
       signIn, 
       signUp, 
-      signInWithGoogle, 
+      signInWithGoogle,
+      signInWithPhone,
+      verifyOtp,
       logout,
       resetPassword 
     }}>

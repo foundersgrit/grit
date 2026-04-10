@@ -2,38 +2,58 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { query, orderBy, limit, onSnapshot } from "firebase/firestore";
-import { ordersRef } from "@/lib/firebase/collections";
+import { createClient } from "@/utils/supabase/client";
 import Image from "next/image";
 
 interface ProofOrder {
   id: string;
   items: { name: string; image: string }[];
   shippingAddress: { city: string };
-  createdAt: any;
+  createdAt: string;
 }
 
 export function SocialProof() {
   const [orders, setOrders] = useState<ProofOrder[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
+  const supabase = createClient();
 
   useEffect(() => {
-    const q = query(ordersRef, orderBy("createdAt", "desc"), limit(5));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data = snapshot.docs.map(doc => {
-        const orderData = doc.data();
-        return {
-          id: doc.id,
-          items: orderData.items || [],
-          shippingAddress: orderData.shippingAddress || { city: "Unknown" },
-          createdAt: orderData.createdAt
-        };
-      }) as ProofOrder[];
-      setOrders(data);
-    });
+    const fetchRecentOrders = async () => {
+      const { data, error } = await supabase
+        .from("orders")
+        .select("id, shipping_address, created_at, order_items(product_name, product_image)")
+        .order("created_at", { ascending: false })
+        .limit(5);
+      
+      if (data) {
+        setOrders(data.map((order: any) => ({
+          id: order.id,
+          items: order.order_items.map((item: any) => ({
+            name: item.product_name,
+            image: item.product_image
+          })),
+          shippingAddress: order.shipping_address as { city: string },
+          createdAt: order.created_at
+        })));
+      }
+    };
 
-    return () => unsubscribe();
+    fetchRecentOrders();
+
+    // Subscribe to new orders for realtime proof
+    const channel = supabase
+      .channel('public:orders')
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'orders' },
+        () => fetchRecentOrders()
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   useEffect(() => {

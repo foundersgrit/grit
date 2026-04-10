@@ -1,15 +1,7 @@
-import { 
-  query, 
-  where, 
-  getDocs, 
-  orderBy, 
-  limit, 
-  QueryConstraint,
-  collection
-} from 'firebase/firestore';
-import { db } from './firebase/config';
-import { productsRef, journalRef, arenaRef } from './firebase/collections';
+import { createClient } from '@/utils/supabase/client';
 import { Product, CategorySlug, JournalEntry, ArenaEntry, Category } from '@/types';
+
+const supabase = createClient();
 
 export interface SearchOptions {
   category?: CategorySlug;
@@ -22,115 +14,131 @@ export interface SearchOptions {
 
 export async function searchProducts(options: SearchOptions = {}): Promise<Product[]> {
   try {
-    const constraints: QueryConstraint[] = [];
+    let query = supabase
+      .from('products')
+      .select('*');
 
     if (options.category) {
-      constraints.push(where('category', '==', options.category));
+      query = query.eq('category_slug', options.category);
     }
 
     if (options.minPrice !== undefined) {
-      constraints.push(where('price', '>=', options.minPrice));
+      query = query.gte('price', options.minPrice);
     }
 
     if (options.maxPrice !== undefined) {
-      constraints.push(where('price', '<=', options.maxPrice));
+      query = query.lte('price', options.maxPrice);
     }
 
     if (options.searchTerm) {
       const term = options.searchTerm.toLowerCase();
-      constraints.push(where('searchTerms', 'array-contains', term));
+      // Using array_contains mapping if search_terms is defined as TEXT[]
+      query = query.contains('search_terms', [term]);
     }
 
     if (options.sortBy) {
       if (options.sortBy === 'price-low') {
-        constraints.push(orderBy('price', 'asc'));
+        query = query.order('price', { ascending: true });
       } else if (options.sortBy === 'price-high') {
-        constraints.push(orderBy('price', 'desc'));
+        query = query.order('price', { ascending: false });
       } else if (options.sortBy === 'newest') {
-        constraints.push(orderBy('createdAt', 'desc'));
+        query = query.order('created_at', { ascending: false });
       }
     }
 
     if (options.limitTo) {
-      constraints.push(limit(options.limitTo));
+      query = query.limit(options.limitTo);
     }
 
-    const q = query(productsRef, ...constraints);
-    const snapshot = await getDocs(q);
+    const { data, error } = await query;
     
-    return snapshot.docs.map(doc => ({
-      ...doc.data(),
-      id: doc.id
-    }));
+    if (error) throw error;
+    return data as Product[];
   } catch (error) {
-    console.error('Firestore searchProducts error:', error);
+    console.error('Supabase searchProducts error:', error);
     return [];
   }
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
   try {
-    const q = query(productsRef, where('slug', '==', slug), limit(1));
-    const snapshot = await getDocs(q);
-    if (snapshot.empty) return null;
-    const doc = snapshot.docs[0];
-    return {
-      ...doc.data(),
-      id: doc.id
-    };
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .eq('slug', slug)
+      .single();
+    
+    if (error) return null;
+    return data as Product;
   } catch (error) {
-    console.error('Firestore getProductBySlug error:', error);
+    console.error('Supabase getProductBySlug error:', error);
     return null;
   }
 }
 
 export async function getAllCategories(): Promise<Category[]> {
   try {
-    const snapshot = await getDocs(query(collection(db, 'categories')));
-    return snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })) as Category[];
+    const { data, error } = await supabase
+      .from('categories')
+      .select('*')
+      .order('name', { ascending: true });
+    
+    if (error) throw error;
+    return data as Category[];
   } catch (error) {
-    console.error('Firestore getAllCategories error:', error);
+    console.error('Supabase getAllCategories error:', error);
     return [];
   }
 }
 
 export async function getCategoryBySlug(slug: string): Promise<Category | null> {
   try {
-    const q = query(collection(db, 'categories'), where('slug', '==', slug), limit(1));
-    const snapshot = await getDocs(q);
-    if (snapshot.empty) return null;
-    const doc = snapshot.docs[0];
-    return { ...doc.data(), id: doc.id } as Category;
+    const { data, error } = await supabase
+      .from('categories')
+      .select('*')
+      .eq('slug', slug)
+      .single();
+    
+    if (error) return null;
+    return data as Category;
   } catch (error) {
-    console.error('Firestore getCategoryBySlug error:', error);
+    console.error('Supabase getCategoryBySlug error:', error);
     return null;
   }
 }
 
 export async function fetchJournalEntries(limitTo?: number): Promise<JournalEntry[]> {
   try {
-    const constraints: QueryConstraint[] = [orderBy('date', 'desc')];
-    if (limitTo) constraints.push(limit(limitTo));
+    let query = supabase
+      .from('journal_entries')
+      .select('*')
+      .order('date', { ascending: false });
     
-    const q = query(journalRef, ...constraints);
-    const snapshot = await getDocs(q);
-    return snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+    if (limitTo) query = query.limit(limitTo);
+    
+    const { data, error } = await query;
+    if (error) throw error;
+    return data as JournalEntry[];
   } catch (error) {
-    console.error('Firestore fetchJournalEntries error:', error);
+    console.error('Supabase fetchJournalEntries error:', error);
     return [];
   }
 }
 
 export async function fetchArenaEntries(limitTo?: number): Promise<ArenaEntry[]> {
   try {
-    const constraints: QueryConstraint[] = [orderBy('date', 'desc')];
-    if (limitTo) constraints.push(limit(limitTo));
+    let query = supabase
+      .from('arena_entries')
+      .select('*')
+      .order('date', { ascending: false });
     
-    const q = query(arenaRef, ...constraints);
-    const snapshot = await getDocs(q);
-    return snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+    if (limitTo) query = query.limit(limitTo);
+    
+    const { data, error } = await query;
+    if (error) throw error;
+    return data as ArenaEntry[];
   } catch (error) {
-    console.error('Firestore fetchArenaEntries error:', error);
+    console.error('Supabase fetchArenaEntries error:', error);
     return [];
   }
 }

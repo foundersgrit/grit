@@ -1,58 +1,79 @@
-import { adminDb, adminAuth } from '@/lib/firebase/admin';
-import { FieldValue } from 'firebase-admin/firestore';
-import { cookies } from 'next/headers';
-import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from "@supabase/supabase-js";
+import { cookies } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
+
+// Admin client with service role to bypass RLS for critical transactions
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 export async function POST(request: NextRequest) {
   try {
     const orderData = await request.json();
     const cookieStore = await cookies();
-    const sessionCookie = cookieStore.get('session')?.value;
-
-    let userId = "guest";
-
-    if (sessionCookie) {
-      try {
-        const decodedClaims = await adminAuth.verifySessionCookie(sessionCookie, true);
-        userId = decodedClaims.uid;
-      } catch (e) {
-        console.warn("Invalid session cookie during checkout. Proceeding as guest if data matches.");
-      }
-    }
-
-    // Ensure userId in payload matches verified userId or is "guest"
-    if (orderData.userId !== userId && userId !== "guest") {
-      return NextResponse.json({ error: "Identity mismatch." }, { status: 403 });
-    }
+    
+    // Create a regular client to verify the user session
+    const { createClient: createServerClient } = await import("@/utils/supabase/server");
+    const supabase = createServerClient(cookieStore);
+    
+    const { data: { user } } = await supabase.auth.getUser();
+    const profileId = user?.id || null;
 
     // Server-side timestamp and ID generation
-    const orderRef = adminDb.collection('orders').doc();
-    const finalOrder = {
-      ...orderData,
-      id: orderRef.id,
-      userId,
-      createdAt: new Date().toISOString(),
-      serverTimestamp: new Date().toISOString(),
-      internalStatus: 'awaiting_payment_confirmation'
-    };
+    const order_number = `GRIT-${Math.random().toString(36).substring(2, 9).toUpperCase()}`;
+    
+    // Start transactional-like operations using admin client
+    const { data: order, error: orderError } = await supabaseAdmin
+      .from('orders')
+      .insert({
+        profile_id: profileId,
+        order_number,
+        status: orderData.status || 'Processing',
+        total: orderData.financials.total,
+        item_count: orderData.items.length,
+        shipping_address: orderData.shippingInfo,
+        payment_status: orderData.paymentInfo.status === 'cod' ? 'Pending' : 'Awaiting Verification'
+      })
+      .select()
+      .single();
 
-    await orderRef.set(finalOrder);
+    if (orderError) throw orderError;
 
-    // If logged in, update user's last order date or similar metadata
-    if (userId !== "guest") {
-      await adminDb.collection('users').doc(userId).set({
-        lastOrderAt: finalOrder.createdAt,
-        totalOrders: FieldValue.increment(1)
-      }, { merge: true });
+    // Insert order items
+    const orderItems = orderData.items.map((item: any) => ({
+      order_id: order.id,
+      product_id: item.id,
+      variant_id: item.variantId || 'base',
+      product_name: item.name,
+      product_image: item.image,
+      quantity: item.quantity,
+      price: item.price
+    }));
+
+    const { error: itemsError } = await supabaseAdmin
+      .from('order_items')
+      .insert(orderItems);
+
+    if (itemsError) throw itemsError;
+
+    // Dispatch Order Confirmation Email (Background task in Next.js)
+    if (orderData.shippingInfo.email) {
+      const { sendOrderConfirmation } = await import("@/lib/email-service");
+      sendOrderConfirmation(orderData.shippingInfo.email, {
+        order_number,
+        total: orderData.financials.total,
+        items: orderData.items
+      }).catch(err => console.error("Critical: Email dispatch failure", err));
     }
 
     return NextResponse.json({ 
       status: 'success', 
-      orderId: orderRef.id 
+      orderId: order.id 
     }, { status: 201 });
 
-  } catch (error) {
-    console.error('Order creation error:', error);
-    return NextResponse.json({ error: 'Failed to secure order.' }, { status: 500 });
+  } catch (error: any) {
+    console.error('Supabase order creation error:', error);
+    return NextResponse.json({ error: error.message || 'Failed to secure order.' }, { status: 500 });
   }
 }

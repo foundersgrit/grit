@@ -4,8 +4,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/Button";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { useToast } from "@/components/providers/ToastProvider";
-import { db } from "@/lib/firebase/config";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { createClient } from "@/utils/supabase/client";
 
 export function ProfileForm() {
   const { user } = useAuth();
@@ -15,25 +14,24 @@ export function ProfileForm() {
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
   const [password, setPassword] = useState("");
-  const [isUpdating, setIsUpdating] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const supabase = createClient();
 
   useEffect(() => {
     async function fetchProfile() {
       if (!user) return;
       
       try {
-        const userDocRef = doc(db, "users", user.uid);
-        const userDoc = await getDoc(userDocRef);
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", user.id)
+          .single();
         
-        if (userDoc.exists()) {
-          const data = userDoc.data();
-          setName(data.name || user.displayName || "");
-          setEmail(data.email || user.email || "");
-          setAddress(data.address || "");
-        } else {
-          setName(user.displayName || "");
-          setEmail(user.email || "");
+        if (data) {
+          setName(data.name || "");
+          setEmail(data.email || "");
+          setAddress(data.addresses?.[0] || "");
         }
       } catch (error) {
         console.error("Error fetching user profile:", error);
@@ -52,18 +50,21 @@ export function ProfileForm() {
     setIsUpdating(true);
     
     try {
-      const userDocRef = doc(db, "users", user.uid);
-      await updateDoc(userDocRef, {
-        name,
-        email,
-        address,
-        updatedAt: new Date().toISOString()
-      });
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          name,
+          addresses: [address],
+          updated_at: new Date().toISOString()
+        })
+        .eq("id", user.id);
+      
+      if (error) throw error;
       
       showToast("Profile updated.");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error updating profile:", error);
-      showToast("Setback occurred. Try again.");
+      showToast(error.message || "Setback occurred. Try again.");
     } finally {
       setIsUpdating(false);
     }

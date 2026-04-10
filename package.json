@@ -14,16 +14,16 @@
     "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^6.4.6",
     "@mui/material": "^6.4.6",
+    "@supabase/ssr": "^0.10.2",
+    "@supabase/supabase-js": "^2.103.0",
     "clsx": "^2.1.1",
-    "firebase": "^12.12.0",
-    "firebase-admin": "^13.8.0",
-    "firebase-functions": "^7.2.5",
     "framer-motion": "^12.38.0",
     "motion-dom": "^12.38.0",
     "motion-utils": "^12.36.0",
     "next": "16.2.2",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "resend": "^6.10.0",
     "tailwind-merge": "^2.6.0"
   },
   "devDependencies": {
@@ -33,6 +33,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.2",
+    "supabase": "^2.89.1",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

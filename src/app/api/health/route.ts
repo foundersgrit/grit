@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { db } from "@/lib/firebase/config";
-import { collection, getDocs, limit, query } from "firebase/firestore";
+import { createClient } from "@/utils/supabase/server";
+import { cookies } from "next/headers";
 
 /**
  * Global Uptime & Service Health Protocol
@@ -9,21 +9,27 @@ import { collection, getDocs, limit, query } from "firebase/firestore";
 export async function GET() {
   const timestamp = new Date().toISOString();
   let services = {
-    firestore: "unknown",
-    auth: "connected", // Auth is handled client-side/middleware mostly
-    storage: "connected"
+    supabase: "unknown",
+    auth: "operational",
+    storage: "operational"
   };
 
   try {
-    // Structural test: verify Firestore read capability
-    // Querying the products collection with minimal footprint (1 doc)
-    const productsRef = collection(db, "products");
-    const q = query(productsRef, limit(1));
-    await getDocs(q);
-    services.firestore = "operational";
+    const cookieStore = await cookies();
+    const supabase = createClient(cookieStore);
+
+    // Structural test: verify Supabase connectivity via minimal read
+    const { error } = await supabase
+      .from("categories")
+      .select("id")
+      .limit(1);
+
+    if (error) throw error;
+    
+    services.supabase = "operational";
   } catch (err) {
     console.error("[Health Check Failure]", err);
-    services.firestore = "degraded";
+    services.supabase = "degraded";
     
     return NextResponse.json({
       status: "unstable",

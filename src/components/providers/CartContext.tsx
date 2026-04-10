@@ -4,8 +4,7 @@ import React, { createContext, useContext, useState, useEffect, useMemo, useRef 
 import { CartItem, Product, ProductVariant, Cart } from "@/types";
 import { useToast } from "@/components/providers/ToastProvider";
 import { useAuth } from "@/components/providers/AuthProvider";
-import { db } from "@/lib/firebase/config";
-import { doc, onSnapshot, setDoc, getDoc } from "firebase/firestore";
+import { createClient } from "@/utils/supabase/client";
 
 interface CartContextType {
   cart: CartItem[];
@@ -33,6 +32,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const [lastAddedId, setLastAddedId] = useState<string | null>(null);
   const syncInProgress = useRef(false);
+  const supabase = createClient();
 
   // Load from localStorage on mount (Initial hydration)
   useEffect(() => {
@@ -54,37 +54,41 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, [cart, isHydrated, user]);
 
-  // Firestore Sync & Merge
+  // Supabase Sync & Merge
   useEffect(() => {
     if (!isHydrated || authLoading) return;
 
-    let unsubscribe: () => void = () => {};
-
     if (user) {
-      const cartDocRef = doc(db, "carts", user.uid);
-      
       const performMerge = async () => {
         syncInProgress.current = true;
         try {
-          const cartDoc = await getDoc(cartDocRef);
+          const { data: remoteCartData } = await supabase
+            .from("carts")
+            .select("*")
+            .eq("profile_id", user.id)
+            .single();
+          
           const localCart = JSON.parse(localStorage.getItem("grit_cart") || "[]");
           
           if (localCart.length > 0) {
-            const mergedItems = cartDoc.exists() ? [...(cartDoc.data() as Cart).items] : [];
+            const mergedItems = remoteCartData ? [...(remoteCartData.items as CartItem[])] : [];
             
             localCart.forEach((guestItem: CartItem) => {
               const existingIndex = mergedItems.findIndex(i => i.id === guestItem.id);
               if (existingIndex > -1) {
                 mergedItems[existingIndex].quantity = Math.max(mergedItems[existingIndex].quantity, guestItem.quantity);
               } else {
-                mergedItems.unshift(guestItem); // Prepend for recency
+                mergedItems.unshift(guestItem);
               }
             });
 
-            await setDoc(cartDocRef, {
-              items: mergedItems,
-              updatedAt: new Date().toISOString()
-            });
+            await supabase
+              .from("carts")
+              .upsert({
+                profile_id: user.id,
+                items: mergedItems,
+                updated_at: new Date().toISOString()
+              });
             
             localStorage.removeItem("grit_cart");
             showToast("Cart synced.");
@@ -98,29 +102,38 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
       performMerge();
 
-      unsubscribe = onSnapshot(cartDocRef, (doc) => {
-        if (doc.exists() && !syncInProgress.current) {
-          const remoteCart = doc.data() as Cart;
-          setCart(remoteCart.items);
-        }
-      }, (error) => {
-        console.error("Cart subscription error:", error);
-      });
+      const channel = supabase
+        .channel(`cart:${user.id}`)
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'carts', filter: `profile_id=eq.${user.id}` },
+          (payload: any) => {
+            if (!syncInProgress.current && payload.new && payload.new.items) {
+              setCart(payload.new.items as CartItem[]);
+            }
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
     }
+  }, [user, authLoading, isHydrated]);
 
-    return () => unsubscribe();
-  }, [user, authLoading, isHydrated, showToast]);
-
-  const updateFirestoreCart = async (newCart: CartItem[]) => {
+  const updateSupabaseCart = async (newCart: CartItem[]) => {
     if (user) {
       syncInProgress.current = true;
       try {
-        await setDoc(doc(db, "carts", user.uid), {
-          items: newCart,
-          updatedAt: new Date().toISOString()
-        });
+        await supabase
+          .from("carts")
+          .upsert({
+            profile_id: user.id,
+            items: newCart,
+            updated_at: new Date().toISOString()
+          });
       } catch (err) {
-        console.error("Error updating Firestore cart:", err);
+        console.error("Error updating Supabase cart:", err);
       } finally {
         syncInProgress.current = false;
       }
@@ -160,7 +173,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         newCart = [newItem, ...prevCart]; // Prepend for recency
       }
       
-      updateFirestoreCart(newCart);
+      updateSupabaseCart(newCart);
       return newCart;
     });
 
@@ -171,7 +184,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const removeItem = (cartItemId: string) => {
     setCart((prevCart) => {
       const newCart = prevCart.filter((item) => item.id !== cartItemId);
-      updateFirestoreCart(newCart);
+      updateSupabaseCart(newCart);
       return newCart;
     });
     if (lastAddedId === cartItemId) setLastAddedId(null);
@@ -186,14 +199,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       const newCart = prevCart.map((item) => 
         item.id === cartItemId ? { ...item, quantity } : item
       );
-      updateFirestoreCart(newCart);
+      updateSupabaseCart(newCart);
       return newCart;
     });
   };
 
   const clearCart = () => {
     setCart([]);
-    updateFirestoreCart([]);
+    updateSupabaseCart([]);
     setLastAddedId(null);
   };
 

@@ -1,11 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { useAuth } from "@/components/providers/AuthProvider";
-import { auth as firebaseAuth } from "@/lib/firebase/config";
-import { RecaptchaVerifier, signInWithPhoneNumber, ConfirmationResult } from "firebase/auth";
 
 export function AuthForm() {
   const [isLogin, setIsLogin] = useState(true);
@@ -14,20 +12,12 @@ export function AuthForm() {
   const [password, setPassword] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("+880");
   const [otp, setOtp] = useState("");
-  const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
+  const [otpSent, setOtpSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const { signIn, signUp, signInWithGoogle } = useAuth();
-
-  useEffect(() => {
-    if (authMethod === "phone" && !window.recaptchaVerifier) {
-      window.recaptchaVerifier = new RecaptchaVerifier(firebaseAuth, "recaptcha-container", {
-        size: "invisible",
-      });
-    }
-  }, [authMethod]);
+  const { signIn, signUp, signInWithGoogle, signInWithPhone, verifyOtp } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,51 +26,61 @@ export function AuthForm() {
     setIsLoading(true);
 
     try {
+      let result;
       if (authMethod === "email") {
         if (isLogin) {
-          await signIn(email, password);
-          setSuccess("Welcome back. The work continues.");
+          result = await signIn(email, password);
         } else {
-          await signUp(email, password);
-          setSuccess("You're in. The arena awaits.");
+          result = await signUp(email, password);
         }
       } else if (authMethod === "phone") {
-        if (!confirmationResult) {
-          const result = await signInWithPhoneNumber(firebaseAuth, phoneNumber, window.recaptchaVerifier);
-          setConfirmationResult(result);
-          setSuccess("Code sent. Persistence is key.");
-          setIsLoading(false);
-          return;
+        if (!otpSent) {
+          result = await signInWithPhone(phoneNumber);
+          if (!result.error) {
+            setOtpSent(true);
+            setSuccess("Code sent. Persistence is key.");
+            setIsLoading(false);
+            return;
+          }
         } else {
-          await confirmationResult.confirm(otp);
-          setSuccess("Identity verified. Welcome.");
+          result = await verifyOtp(phoneNumber, otp);
         }
       }
 
-      setTimeout(() => {
-        router.push("/account/profile");
-        router.refresh();
-      }, 800);
-    } catch (err: unknown) {
+      if (result?.error) {
+        setError(result.error.message || "A temporary setback. Try again.");
+      } else if (authMethod === "phone" && otpSent) {
+        setSuccess("Identity verified. Welcome.");
+        redirectUser();
+      } else if (authMethod === "email") {
+        setSuccess(isLogin ? "Welcome back. The work continues." : "You're in. The arena awaits.");
+        redirectUser();
+      }
+    } catch (err: any) {
       console.error(err);
-      setError("A temporary setback. Try again.");
+      setError(err.message || "An unexpected failure occurred.");
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const redirectUser = () => {
+    setTimeout(() => {
+      router.push("/account/profile");
+      router.refresh();
+    }, 800);
   };
 
   const handleGoogleSignIn = async () => {
     setError(null);
     setIsLoading(true);
     try {
-      await signInWithGoogle();
+      const { error } = await signInWithGoogle();
+      if (error) throw error;
       setSuccess("Authenticated. The arena awaits.");
-      setTimeout(() => {
-        router.push("/account/profile");
-        router.refresh();
-      }, 800);
-    } catch (err) {
-      setError("Google authentication failed. Attempt another way.");
+      // Supabase OAuth usually handles redirects via redirectTo option
+    } catch (err: any) {
+      setError(err.message || "Google authentication failed. Attempt another way.");
     } finally {
       setIsLoading(false);
     }
@@ -161,7 +161,7 @@ export function AuthForm() {
               <input 
                 type="tel" 
                 required
-                disabled={!!confirmationResult}
+                disabled={otpSent}
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
                 placeholder="+8801XXXXXXXXX"
@@ -169,7 +169,7 @@ export function AuthForm() {
               />
             </div>
 
-            {confirmationResult && (
+            {otpSent && (
               <div className="flex flex-col gap-2">
                 <label className="font-structural text-sm uppercase tracking-widest text-gray-400">6-Digit Code</label>
                 <input 
@@ -182,12 +182,11 @@ export function AuthForm() {
                 />
               </div>
             )}
-            <div id="recaptcha-container"></div>
           </>
         )}
 
         <Button variant="accent" type="submit" disabled={isLoading} className="mt-4">
-          {isLoading ? "Processing..." : (authMethod === "phone" && !confirmationResult ? "Send Code" : (isLogin ? "Enter" : "Join"))}
+          {isLoading ? "Processing..." : (authMethod === "phone" && !otpSent ? "Send Code" : (isLogin ? "Enter" : "Join"))}
         </Button>
       </form>
 
@@ -229,8 +228,4 @@ export function AuthForm() {
   );
 }
 
-declare global {
-  interface Window {
-    recaptchaVerifier: RecaptchaVerifier;
-  }
-}
+

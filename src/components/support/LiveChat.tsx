@@ -21,7 +21,7 @@ export function LiveChat() {
     (window as any).Tawk_API.onLoad = function() {
       // Set branded theme colors via API if possible, or use custom CSS injection
       (window as any).Tawk_API.setAttributes({
-        'name': user?.displayName || 'Inquisitive Operative',
+        'name': user?.user_metadata?.full_name || 'Inquisitive Operative',
         'email': user?.email || '',
       }, function(error: any) {});
     };

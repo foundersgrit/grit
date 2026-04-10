@@ -103,14 +103,13 @@ const withPWA = withPWAInit({
 });
 
 const nextConfig: NextConfig = {
-  turbopack: {},
   images: {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'firebasestorage.googleapis.com',
+        hostname: 'pqawlxlxkyvifllszmwf.supabase.co',
         port: '',
-        pathname: '/v0/b/**',
+        pathname: '/storage/v1/object/public/**',
       },
       {
         protocol: 'https',
@@ -160,12 +159,12 @@ const nextConfig: NextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self';",
-              "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://*.firebaseapp.com https://*.googleapis.com https://*.gstatic.com https://www.google-analytics.com https://www.googletagmanager.com https://embed.tawk.to https://*.tawk.to;",
-              "connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com wss://*.tawk.to https://*.tawk.to;",
-              "img-src 'self' data: https://*.googleusercontent.com https://*.googleapis.com https://firebasestorage.googleapis.com https://*.tawk.to;",
+              "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://*.supabase.co https://*.supabase.in https://*.googleapis.com https://*.gstatic.com https://www.google-analytics.com https://www.googletagmanager.com https://embed.tawk.to https://*.tawk.to;",
+              "connect-src 'self' https://*.supabase.co https://*.supabase.in https://*.googleapis.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com wss://*.tawk.to https://*.tawk.to;",
+              "img-src 'self' data: https://*.supabase.co https://*.supabase.in https://*.googleusercontent.com https://*.googleapis.com https://*.tawk.to;",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.tawk.to;",
               "font-src 'self' https://fonts.gstatic.com https://*.tawk.to;",
-              "frame-src https://*.firebaseapp.com https://*.firebaseio.com https://*.tawk.to;",
+              "frame-src https://*.supabase.co https://*.supabase.in https://*.tawk.to;",
               "object-src 'none';",
             ].join(' '),
           },
