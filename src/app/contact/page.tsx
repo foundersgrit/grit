@@ -12,10 +12,10 @@ export default function ContactPage() {
       <div className="container mx-auto px-4 max-w-6xl">
         <div className="mb-16">
           <h1 className="text-4xl md:text-7xl uppercase tracking-tighter mb-4 text-white leading-none">
-            We're Here.
+            We&apos;re Here.
           </h1>
           <p className="font-editorial text-gray-400 max-w-2xl">
-            Reach out however works for you. Whether it's a structural failure, a sizing query, or a partnership proposal—we listen.
+            Reach out however works for you. Whether it&apos;s a structural failure, a sizing query, or a partnership proposal—we listen.
           </p>
         </div>
 
@@ -72,7 +72,7 @@ export default function ContactPage() {
             </div>
 
             <div className="p-8 border border-white/5 bg-white/5 italic font-editorial text-gray-400 text-sm leading-relaxed">
-              "Every message is evidence of a conversation. We don't use automated replies because your work isn't automated. A human from our team will respond."
+              "Every message is evidence of a conversation. We don&apos;t use automated replies because your work isn&apos;t automated. A human from our team will respond."
             </div>
           </div>
         </div>

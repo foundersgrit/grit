@@ -16,7 +16,7 @@ export default function CartPage() {
             Your cart is empty.
           </h1>
           <p className="font-editorial text-gray-400 mb-12">
-            Gear up for what's ahead. Nothing in here yet to help you endure.
+            Gear up for what&apos;s ahead. Nothing in here yet to help you endure.
           </p>
           <Link href="/shop">
             <Button variant="accent" size="lg">Explore What Endures</Button>

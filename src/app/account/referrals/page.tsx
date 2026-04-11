@@ -4,13 +4,12 @@ import React, { useState } from "react";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { useUserContext } from "@/components/providers/UserProvider";
 import { Button } from "@/components/ui/Button";
-import { motion, AnimatePresence } from "framer-motion";
 import { ContentCopy, Share, WhatsApp, GroupAdd, EmojiEvents, InfoOutlined } from "@mui/icons-material";
 import { useToast } from "@/components/providers/ToastProvider";
-import { UserReferral, ReferralReward } from "@/types";
+import { ReferralReward } from "@/types";
 
 export default function ReferralsPage() {
-  const { user } = useAuth();
+  useAuth();
   const { referral, isLoading } = useUserContext();
   const { showToast } = useToast();
   const [isCopying, setIsCopying] = useState(false);

@@ -9,7 +9,7 @@ export default function DevWebhooksPage() {
   const [transactionId, setTransactionId] = useState(`TXN-${Math.random().toString(36).substr(2, 9).toUpperCase()}`);
   const [amount, setAmount] = useState('');
   const [status, setStatus] = useState<'success' | 'failed'>('success');
-  const [response, setResponse] = useState<any>(null);
+  const [response, setResponse] = useState<unknown>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   // Webhook logic...
@@ -38,8 +38,8 @@ export default function DevWebhooksPage() {
 
       const data = await res.json();
       setResponse(data);
-    } catch (err: any) {
-      setResponse({ error: err.message });
+    } catch (err: unknown) {
+      setResponse({ error: err instanceof Error ? err.message : "Simulated telemetry failure." });
     } finally {
       setIsLoading(false);
     }
@@ -58,7 +58,7 @@ export default function DevWebhooksPage() {
                 <label className="font-structural text-xs uppercase tracking-widest text-gray-500">Provider</label>
                 <select 
                   value={provider} 
-                  onChange={(e) => setProvider(e.target.value as any)}
+                  onChange={(e) => setProvider(e.target.value as 'bKash' | 'Nagad' | 'Stripe')}
                   className="bg-black border border-white/20 p-2 focus:outline-none focus:border-wattle"
                 >
                   <option value="bKash">bKash</option>
@@ -70,7 +70,7 @@ export default function DevWebhooksPage() {
                 <label className="font-structural text-xs uppercase tracking-widest text-gray-500">Status</label>
                 <select 
                   value={status} 
-                  onChange={(e) => setStatus(e.target.value as any)}
+                  onChange={(e) => setStatus(e.target.value as 'success' | 'failed')}
                   className="bg-black border border-white/20 p-2 focus:outline-none focus:border-wattle"
                 >
                   <option value="success">Success</option>
@@ -120,7 +120,7 @@ export default function DevWebhooksPage() {
             {isLoading ? "Transmitting..." : "Simulate Webhook"}
           </Button>
 
-          {response && (
+          {!!response && (
             <div className="mt-8 p-4 bg-black border border-white/10">
               <h3 className="font-structural text-xs uppercase tracking-widest text-gray-500 mb-2">Response</h3>
               <pre className="text-sm font-mono text-wattle overflow-auto max-h-48">

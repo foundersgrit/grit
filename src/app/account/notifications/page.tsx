@@ -4,11 +4,11 @@ import React, { useState } from "react";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { Button } from "@/components/ui/Button";
 import { motion } from "framer-motion";
-import { Notifications, Email, Smartphone, Campaign, Bolt, InfoOutlined } from "@mui/icons-material";
+import { Email, Smartphone, Campaign, Bolt, InfoOutlined } from "@mui/icons-material";
 import { useToast } from "@/components/providers/ToastProvider";
 
 export default function NotificationSettingsPage() {
-  const { user } = useAuth();
+  useAuth();
   const { showToast } = useToast();
   
   const [channels, setChannels] = useState({

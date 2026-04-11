@@ -4,13 +4,13 @@ import React, { useState } from "react";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { useUserContext } from "@/components/providers/UserProvider";
 import { Button } from "@/components/ui/Button";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Bolt, MilitaryTech, EmojiEvents, History, Checklist, Flare, ChevronRight, InfoOutlined } from "@mui/icons-material";
 import { useToast } from "@/components/providers/ToastProvider";
 import { claimDailyXP } from "@/app/actions/loyalty";
 
 export default function LoyaltyPage() {
-  const { user } = useAuth();
+  useAuth();
   const { loyalty, isLoading } = useUserContext();
   const { showToast } = useToast();
   const [isClaiming, setIsClaiming] = useState(false);
