@@ -1,8 +1,4 @@
 {
   "framework": "nextjs",
-  "buildCommand": "next build --webpack",
-  "env": {
-    "GRIT_ADMIN_UIDS": "@grit-admin-uids",
-    "NEXT_PUBLIC_SITE_URL": "@next-public-site-url"
-  }
+  "buildCommand": "next build --webpack"
 }
