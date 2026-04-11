@@ -37,7 +37,7 @@ export function AuthForm() {
       } else if (authMethod === "phone") {
         if (!otpSent) {
           result = (await signInWithPhone(phoneNumber)) as unknown as AuthResult;
-          if (result && !result.error) {
+          if (result && typeof result === 'object' && 'error' in result && !result.error) {
             setOtpSent(true);
             setSuccess("Code sent. Persistence is key.");
             setIsLoading(false);
@@ -48,8 +48,9 @@ export function AuthForm() {
         }
       }
 
-      if (result?.error) {
-        setError(result.error.message || "A temporary setback. Try again.");
+      if (result && typeof result === 'object' && 'error' in result && result.error) {
+        const errorObj = result.error as { message?: string };
+        setError(errorObj.message || "A temporary setback. Try again.");
       } else if (authMethod === "phone" && otpSent) {
         setSuccess("Identity verified. Welcome.");
         redirectUser();
@@ -77,8 +78,8 @@ export function AuthForm() {
     setError(null);
     setIsLoading(true);
     try {
-      const { error } = await signInWithGoogle();
-      if (error) throw error;
+      const result = await signInWithGoogle();
+      if (result && typeof result === 'object' && 'error' in result && result.error) throw result.error;
       setSuccess("Authenticated. The arena awaits.");
       // Supabase OAuth usually handles redirects via redirectTo option
     } catch (err: unknown) {
