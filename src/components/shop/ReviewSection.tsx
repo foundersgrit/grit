@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
 import { Star, Verified, ThumbUpAltOutlined } from "@mui/icons-material";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { Button } from "@/components/ui/Button";
@@ -34,27 +33,38 @@ export function ReviewSection({ productId }: ReviewSectionProps) {
 
   const supabase = createClient();
 
-  const fetchReviews = async () => {
-    const { data, error } = await supabase
+  const fetchReviews = React.useCallback(async () => {
+    const { data } = await supabase
       .from('reviews')
       .select('*, profiles(name)')
       .eq('product_id', productId)
       .order('created_at', { ascending: false });
 
     if (data) {
-      setReviews(data.map((r: any) => ({
-        id: r.id,
-        user: r.profiles?.name || "Anonymous Operative",
-        rating: r.rating,
-        date: new Date(r.created_at).toLocaleDateString(),
-        comment: r.comment,
-        isVerified: r.is_verified,
-        images: [],
-        helpful: r.helpful_count || 0
-      })));
+      setReviews(data.map((r) => {
+        const raw = r as unknown as { 
+          id: string; 
+          rating: number; 
+          created_at: string; 
+          comment: string; 
+          is_verified: boolean; 
+          helpful_count: number; 
+          profiles: { name: string } | null 
+        };
+        return {
+          id: raw.id,
+          user: raw.profiles?.name || "Anonymous Operative",
+          rating: raw.rating,
+          date: new Date(raw.created_at).toLocaleDateString(),
+          comment: raw.comment,
+          isVerified: raw.is_verified,
+          images: [],
+          helpful: raw.helpful_count || 0
+        };
+      }));
     }
     setLoading(false);
-  };
+  }, [productId, supabase]);
 
   useEffect(() => {
     fetchReviews();
@@ -100,9 +110,10 @@ export function ReviewSection({ productId }: ReviewSectionProps) {
       showToast("Evidence logged successfully.");
       setIsFormOpen(false);
       setNewReview({ rating: 5, comment: "" });
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      showToast(err.message || "Telemetry failure. Try again.");
+      const errorMessage = err instanceof Error ? err.message : "Telemetry failure. Try again.";
+      showToast(errorMessage);
     }
   };
 

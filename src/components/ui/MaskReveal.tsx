@@ -23,7 +23,7 @@ export function MaskReveal({ children, delay = 0, className = "", direction = "u
       transition: { 
         duration: 0.8, 
         delay, 
-        ease: [0.16, 1, 0.3, 1] as any // Custom ease-out
+        ease: [0.16, 1, 0.3, 1] as [number, number, number, number]
       }
     }
   };

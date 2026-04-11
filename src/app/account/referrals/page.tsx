@@ -12,7 +12,7 @@ export default function ReferralsPage() {
   useAuth();
   const { referral, isLoading } = useUserContext();
   const { showToast } = useToast();
-  const [isCopying, setIsCopying] = useState(false);
+
 
   // Note: referrals data might not be in loyalty, but in user doc root or a nested 'referral' field.
   // Based on my types update: UserProfile has 'referral: UserReferral'
@@ -30,13 +30,11 @@ export default function ReferralsPage() {
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(referralData.referralLink);
-    setIsCopying(true);
     showToast("Referral link copied to clipboard.");
-    setTimeout(() => setIsCopying(false), 2000);
   };
 
   const handleWhatsAppShare = () => {
-    const text = `I train with GRIT. Join the arena — here's ৳200 off your first gear deployment: ${referralData.referralLink}`;
+    const text = `I train with GRIT. Join the arena — here&apos;s ৳200 off your first gear deployment: ${referralData.referralLink}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
   };
 

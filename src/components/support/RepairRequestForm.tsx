@@ -32,7 +32,7 @@ export function RepairRequestForm() {
       <div className="p-12 bg-bottle-green/30 border border-wattle/50 text-center animate-in fade-in zoom-in duration-500">
         <h3 className="font-structural text-2xl uppercase tracking-tighter mb-4 text-wattle">Request Logged.</h3>
         <p className="font-editorial text-gray-300 mb-8">
-          We've received your repair data. Our team will review the structural details and message you with shipping instructions within 24 hours. The work continues.
+          We&apos;ve received your repair data. Our team will review the structural details and message you with shipping instructions within 24 hours. The work continues.
         </p>
         <Button variant="secondary" onClick={() => setIsSuccess(false)}>New Request</Button>
       </div>

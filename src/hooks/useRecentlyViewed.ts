@@ -16,11 +16,34 @@ export function useRecentlyViewed() {
 
   // Sync with LocalStorage for guests or initial load
   useEffect(() => {
-    const local = localStorage.getItem(STORAGE_KEY);
-    if (local && !user) {
-      setItems(JSON.parse(local));
-    }
-    setLoading(false);
+    if (typeof window === "undefined" || user) return;
+
+    const syncLocalData = () => {
+      const local = localStorage.getItem(STORAGE_KEY);
+      if (!local) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const parsed = JSON.parse(local) as Product[];
+        setItems(currentItems => {
+          // Strict JSON comparison to prevent cascading render loops
+          if (JSON.stringify(currentItems) !== JSON.stringify(parsed)) {
+            return parsed;
+          }
+          return currentItems;
+        });
+      } catch (err) {
+        console.error("Malformed recently viewed data in storage:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    // Small delay to ensure hydration is complete and avoid mismatch
+    const timer = setTimeout(syncLocalData, 0);
+    return () => clearTimeout(timer);
   }, [user]);
 
   // Sync with Supabase for authenticated users

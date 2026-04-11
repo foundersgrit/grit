@@ -35,7 +35,7 @@ export function LoyaltyDashboard() {
             {loyalty.currentTier}
           </h3>
           <p className="font-editorial text-lg text-gray-300 italic border-l-2 border-white/20 pl-4 py-1 mb-8">
-            "You've earned this. Keep building."
+            &quot;You&apos;re currently on pace for Elite status.&quot;
           </p>
           
           <div className="w-full bg-dark-slate h-2 mt-4 relative">

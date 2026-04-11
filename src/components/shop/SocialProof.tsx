@@ -12,6 +12,18 @@ interface ProofOrder {
   createdAt: string;
 }
 
+interface OrderItem {
+  product_name: string;
+  product_image: string;
+}
+
+interface RawOrder {
+  id: string;
+  shipping_address: { city: string };
+  created_at: string;
+  order_items: OrderItem[];
+}
+
 export function SocialProof() {
   const [orders, setOrders] = useState<ProofOrder[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -20,26 +32,31 @@ export function SocialProof() {
 
   useEffect(() => {
     const fetchRecentOrders = async () => {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from("orders")
         .select("id, shipping_address, created_at, order_items(product_name, product_image)")
         .order("created_at", { ascending: false })
         .limit(5);
       
       if (data) {
-        setOrders(data.map((order: any) => ({
-          id: order.id,
-          items: order.order_items.map((item: any) => ({
-            name: item.product_name,
-            image: item.product_image
-          })),
-          shippingAddress: order.shipping_address as { city: string },
-          createdAt: order.created_at
-        })));
+        setOrders((data as unknown as RawOrder[]).map((rawOrder) => {
+          return {
+            id: rawOrder.id,
+            items: rawOrder.order_items.map((item) => ({
+              name: item.product_name,
+              image: item.product_image
+            })),
+            shippingAddress: rawOrder.shipping_address,
+            createdAt: rawOrder.created_at
+          };
+        }));
       }
     };
 
-    fetchRecentOrders();
+    // Defer the initial fetch to avoid synchronous setState in effect
+    const timer = setTimeout(() => {
+      fetchRecentOrders();
+    }, 0);
 
     // Subscribe to new orders for realtime proof
     const channel = supabase
@@ -47,11 +64,15 @@ export function SocialProof() {
       .on(
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'orders' },
-        () => fetchRecentOrders()
+        () => {
+          const t = setTimeout(() => fetchRecentOrders(), 0);
+          return () => clearTimeout(t);
+        }
       )
       .subscribe();
 
     return () => {
+      clearTimeout(timer);
       supabase.removeChannel(channel);
     };
   }, []);

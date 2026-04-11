@@ -107,7 +107,7 @@ export function ComparisonTable({ isOpen, onClose, products }: ComparisonTablePr
                           <td className="py-6 font-structural text-[10px] uppercase tracking-widest text-gray-500">{key}</td>
                           {products.map(p => (
                             <td key={p.id} className="py-6 px-4 font-editorial text-sm text-gray-300">
-                               {(p.specifications as any)[key] || "—"}
+                               {(p.specifications as Record<string, string>)[key] || "—"}
                             </td>
                           ))}
                           {[...Array(3 - products.length)].map((_, i) => (

@@ -7,13 +7,13 @@ import { createClient } from '@/utils/supabase/client';
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  signIn: (email: string, pass: string) => Promise<any>;
-  signUp: (email: string, pass: string) => Promise<any>;
-  signInWithGoogle: () => Promise<any>;
-  signInWithPhone: (phone: string) => Promise<any>;
-  verifyOtp: (phone: string, token: string) => Promise<any>;
+  signIn: (email: string, pass: string) => Promise<{ error: unknown } | null>;
+  signUp: (email: string, password: string, metadata?: Record<string, unknown>) => Promise<{ data: unknown; error: Error | null }>;
+  signInWithGoogle: () => Promise<{ error: unknown } | null>;
+  signInWithPhone: (phone: string) => Promise<{ error: unknown } | null>;
+  verifyOtp: (phone: string, token: string) => Promise<{ error: unknown } | null>;
   logout: () => Promise<void>;
-  resetPassword: (email: string) => Promise<any>;
+  resetPassword: (email: string) => Promise<unknown>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -47,8 +47,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signIn = (email: string, pass: string) => 
     supabase.auth.signInWithPassword({ email, password: pass });
 
-  const signUp = (email: string, pass: string) => 
-    supabase.auth.signUp({ email, password: pass });
+  const signUp = async (email: string, password: string, metadata: Record<string, unknown> = {}) => {
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: metadata,
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+      if (error) throw error;
+      return { data, error: null };
+    } catch (err: unknown) {
+      return { data: null, error: err as Error };
+    }
+  };
 
   const signInWithGoogle = () => 
     supabase.auth.signInWithOAuth({ 

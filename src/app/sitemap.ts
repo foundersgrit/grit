@@ -24,7 +24,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
-    changeFrequency: (route === "" ? "daily" : "monthly") as any,
+    changeFrequency: (route === "" ? "daily" : "monthly") as "daily" | "monthly",
     priority: route === "" ? 1 : 0.5,
   }));
 
@@ -39,7 +39,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const categoryPages = categories.map((cat) => ({
     url: `${baseUrl}/shop/${cat}`,
     lastModified: new Date(),
-    changeFrequency: "weekly" as any,
+    changeFrequency: "weekly" as const,
     priority: 0.8,
   }));
 
@@ -47,7 +47,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const productPages = products.map((prod) => ({
     url: `${baseUrl}/shop/${prod.category}/${prod.slug}`,
     lastModified: new Date(),
-    changeFrequency: "weekly" as any,
+    changeFrequency: "weekly" as const,
     priority: 0.8,
   }));
 
@@ -55,7 +55,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const journalPages = journalEntries.map((post) => ({
     url: `${baseUrl}/journal/${post.slug}`,
     lastModified: new Date(),
-    changeFrequency: "weekly" as any,
+    changeFrequency: "weekly" as const,
     priority: 0.7,
   }));
 

@@ -63,9 +63,10 @@ export function ProfileForm() {
       if (error) throw error;
       
       showToast("Profile updated.");
-    } catch (error: any) {
-      console.error("Error updating profile:", error);
-      showToast(error.message || "Setback occurred. Try again.");
+    } catch (err: unknown) {
+      console.error("Error updating profile:", err);
+      const errorMessage = err instanceof Error ? err.message : "Setback occurred. Try again.";
+      showToast(errorMessage);
     } finally {
       setIsUpdating(false);
     }

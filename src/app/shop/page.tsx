@@ -1,8 +1,9 @@
 import { ProductCard } from "@/components/shop/ProductCard";
 import { ShopSidebar } from "@/components/shop/ShopSidebar";
-import { searchProducts, getAllCategories } from "@/lib/search";
+import { searchProducts, getAllCategories, SearchOptions } from "@/lib/search";
 import { CategorySlug } from "@/types";
 import { Suspense } from "react";
+import Link from "next/link";
 
 export const metadata = {
   title: "Shop All Gear",
@@ -24,7 +25,7 @@ export default async function ShopPage({
 }) {
   const params = await searchParams;
   const categoryFilter = params.category as CategorySlug;
-  const sortFilter = params.sort as any;
+  const sortFilter = params.sort as SearchOptions["sortBy"];
   const searchTerm = params.q as string;
 
   // Parallel fetch products and categories from Firestore
@@ -69,7 +70,7 @@ export default async function ShopPage({
             ) : (
               <div className="py-24 text-center border border-dashed border-white/10 p-12">
                 <p className="font-editorial text-gray-400 mb-8">No gear matches these specific survival parameters.</p>
-                <a href="/shop" className="text-wattle uppercase tracking-widest text-xs border-b border-wattle pb-1">Reset All Filters</a>
+                <Link href="/shop" className="text-wattle uppercase tracking-widest text-xs border-b border-wattle pb-1">Reset All Filters</Link>
               </div>
             )}
           </div>

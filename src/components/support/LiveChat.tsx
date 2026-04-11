@@ -4,6 +4,14 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "@/components/providers/AuthProvider";
 import Script from "next/script";
 
+interface TawkWindow extends Window {
+  Tawk_API?: {
+    onLoad?: () => void;
+    setAttributes: (attr: Record<string, string>, callback: (error: unknown) => void) => void;
+  };
+  Tawk_LoadStart?: Date;
+}
+
 export function LiveChat() {
   const { user } = useAuth();
   
@@ -14,16 +22,18 @@ export function LiveChat() {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    // Configure Tawk.to once it loads
-    (window as any).Tawk_API = (window as any).Tawk_API || {};
-    (window as any).Tawk_LoadStart = new Date();
+    const win = window as unknown as TawkWindow;
+    win.Tawk_LoadStart = new Date();
 
-    (window as any).Tawk_API.onLoad = function() {
+    // Configure Tawk.to once it loads
+    win.Tawk_API = win.Tawk_API || ({} as unknown as NonNullable<TawkWindow['Tawk_API']>);
+
+    win.Tawk_API!.onLoad = function() {
       // Set branded theme colors via API if possible, or use custom CSS injection
-      (window as any).Tawk_API.setAttributes({
+      win.Tawk_API?.setAttributes({
         'name': user?.user_metadata?.full_name || 'Inquisitive Operative',
         'email': user?.email || '',
-      }, function(error: any) {});
+      }, function(error: unknown) {});
     };
 
   }, [user]);

@@ -29,7 +29,7 @@ export default function Error({
       </h1>
       
       <p className="font-editorial text-xl text-gray-300 mb-12 max-w-md">
-        A temporary setback. We're on it. The work continues.
+        A temporary setback. We&apos;re on it. The work continues.
       </p>
 
       <div className="flex flex-col gap-6 w-full max-w-xs">

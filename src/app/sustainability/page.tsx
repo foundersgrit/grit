@@ -37,7 +37,7 @@ export default function SustainabilityPage() {
             <div className="border border-white/10 p-8 h-full bg-dark-slate">
               <h2 className="font-structural text-2xl uppercase mb-6 text-wattle">Endurance</h2>
               <p className="font-editorial text-gray-300 leading-relaxed">
-                The most sustainable piece of clothing is the one you don't have to replace. We engineer failure points out of our garments. We test them until they break, then reinforce them so they don't break again.
+                The most sustainable piece of clothing is the one you don&apos;t have to replace. We engineer failure points out of our garments. We test them until they break, then reinforce them so they don&apos;t break again.
               </p>
             </div>
 
@@ -71,9 +71,9 @@ export default function SustainabilityPage() {
         </div>
         <div className="container mx-auto px-4 max-w-3xl relative z-10">
           <div className="border-l-4 border-white pl-8">
-            <h2 className="font-structural text-3xl md:text-4xl uppercase tracking-tighter mb-8">What We're Working On</h2>
+            <h2 className="font-structural text-3xl md:text-4xl uppercase tracking-tighter mb-8">What We&apos;re Working On</h2>
             <p className="font-editorial text-xl text-gray-300 leading-relaxed mb-12">
-              Progress is a mandatory state. We are not yet where we need to be. Here is exactly where we are focusing our current optimization efforts.
+              Sustainability isn&apos;t just about materials—it&apos;s about durability. We design gear that doesn&apos;t need to be replaced every season. Here is exactly where we are focusing our current optimization efforts.
             </p>
 
             <ul className="space-y-8 font-editorial text-lg text-gray-400">

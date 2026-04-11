@@ -26,24 +26,25 @@ export function AuthForm() {
     setIsLoading(true);
 
     try {
-      let result;
+      type AuthResult = { error?: { message: string } | null } | null;
+      let result: AuthResult = null;
       if (authMethod === "email") {
         if (isLogin) {
-          result = await signIn(email, password);
+          result = (await signIn(email, password)) as unknown as AuthResult;
         } else {
-          result = await signUp(email, password);
+          result = (await signUp(email, password)) as unknown as AuthResult;
         }
       } else if (authMethod === "phone") {
         if (!otpSent) {
-          result = await signInWithPhone(phoneNumber);
-          if (!result.error) {
+          result = (await signInWithPhone(phoneNumber)) as unknown as AuthResult;
+          if (result && !result.error) {
             setOtpSent(true);
             setSuccess("Code sent. Persistence is key.");
             setIsLoading(false);
             return;
           }
         } else {
-          result = await verifyOtp(phoneNumber, otp);
+          result = (await verifyOtp(phoneNumber, otp)) as unknown as AuthResult;
         }
       }
 
@@ -56,9 +57,10 @@ export function AuthForm() {
         setSuccess(isLogin ? "Welcome back. The work continues." : "You're in. The arena awaits.");
         redirectUser();
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      setError(err.message || "An unexpected failure occurred.");
+      const errorMessage = err instanceof Error ? err.message : "Authentication failure. Recalibrating.";
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -79,8 +81,8 @@ export function AuthForm() {
       if (error) throw error;
       setSuccess("Authenticated. The arena awaits.");
       // Supabase OAuth usually handles redirects via redirectTo option
-    } catch (err: any) {
-      setError(err.message || "Google authentication failed. Attempt another way.");
+    } catch (err: unknown) {
+      setError((err as Error).message || "Google authentication failed. Attempt another way.");
     } finally {
       setIsLoading(false);
     }

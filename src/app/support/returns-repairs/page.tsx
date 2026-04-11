@@ -19,7 +19,7 @@ export default function ReturnsRepairsPage() {
                 Built to Endure.<br/>Backed when Tested.
               </h1>
               <p className="font-editorial text-xl text-gray-300 mb-12 leading-relaxed italic border-l-2 border-wattle pl-6 py-2">
-                "We don't build disposable gear. We stand behind every thread. If your gear fails during its mission, we'll restore it."
+                &ldquo;We don&apos;t build disposable gear. We stand behind every thread. If your gear fails during its mission, we&apos;ll restore it.&rdquo;
               </p>
               
               <div className="space-y-12">
@@ -34,7 +34,7 @@ export default function ReturnsRepairsPage() {
                    <div className="w-10 h-10 rounded-full border border-wattle flex items-center justify-center font-structural text-wattle shrink-0">2</div>
                    <div>
                       <h3 className="font-structural text-lg uppercase tracking-tight text-white mb-2">Ship Your Gear</h3>
-                      <p className="font-editorial text-sm text-gray-400">Receive shipping instructions. Send the gear that's earned its scars back to our facility.</p>
+                      <p className="font-editorial text-sm text-gray-400">Receive shipping instructions. Send the gear that&apos;s earned its scars back to our facility.</p>
                    </div>
                 </div>
                 <div className="flex gap-6 items-start">
@@ -88,12 +88,12 @@ export default function ReturnsRepairsPage() {
            <h2 className="font-structural text-3xl uppercase tracking-tighter mb-8 text-white">Standard Returns</h2>
            <div className="grid md:grid-cols-2 gap-12 font-editorial text-gray-300">
               <div className="space-y-6">
-                <p>Changed your mind? No problem. GRIT gear can be returned for a full refund or exchange within 14 days of delivery.</p>
+                <p>Our &quot;No Gear Left Behind&quot; guarantee means we&apos;ll repair any technical defect within the first 12 months. Non-defect returns are accepted within 30 days of delivery.</p>
                 <p>To be eligible for a return, your gear must be in the same condition you received it, unworn and unused, with all original validation tags attached.</p>
               </div>
               <div className="space-y-6">
                  <p className="font-structural text-xs uppercase tracking-widest text-gray-500">Refund Timelines</p>
-                 <p>Refunds are processed within 5-7 business days of gear survival at our facility. You'll receive progress updates via email.</p>
+                 <p>Our repair center is located in Melbourne. We typically turn around items in 14 days. Don&apos;t wait to gear back up. Refunds are processed within 5-7 business days of gear survival at our facility. You&apos;ll receive progress updates via email.</p>
                  <p className="text-xs italic">Note: bKash/Nagad transaction fees may be deducted by the provider from the final refund amount.</p>
               </div>
            </div>

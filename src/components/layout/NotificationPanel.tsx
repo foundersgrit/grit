@@ -25,7 +25,7 @@ export function NotificationPanel() {
 
   const supabase = createClient();
 
-  const fetchNotifications = async () => {
+  const fetchNotifications = React.useCallback(async () => {
     if (!user) return;
     const { data, error } = await supabase
       .from('notifications')
@@ -34,27 +34,31 @@ export function NotificationPanel() {
       .order('created_at', { ascending: false });
 
     if (data) {
-      setNotifications(data.map((n: any) => ({
-        id: n.id,
-        type: n.type,
-        title: n.title,
-        message: n.message,
-        read: n.read,
-        createdAt: n.created_at,
-        link: n.link
+      setNotifications(data.map((n: Record<string, unknown>) => ({
+        id: n.id as string,
+        type: n.type as 'system' | 'award' | 'order' | 'referral',
+        title: n.title as string,
+        message: n.message as string,
+        read: n.read as boolean,
+        createdAt: n.created_at as string,
+        link: n.link as string
       })));
       setUnreadCount(data.filter(n => !n.read).length);
     }
-  };
+  }, [user, supabase]);
 
   useEffect(() => {
     if (!user) {
-      setNotifications([]);
-      setUnreadCount(0);
-      return;
+      const timer = setTimeout(() => {
+        setNotifications(prev => prev.length ? [] : prev);
+        setUnreadCount(prev => prev > 0 ? 0 : prev);
+      }, 0);
+      return () => clearTimeout(timer);
     }
 
-    fetchNotifications();
+    const timer = setTimeout(() => {
+      fetchNotifications();
+    }, 0);
 
     // Subscribe to new notifications
     const channel = supabase
@@ -69,7 +73,7 @@ export function NotificationPanel() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [user]);
+  }, [user, fetchNotifications, supabase]);
 
   const markAllRead = async () => {
     if (!user) return;

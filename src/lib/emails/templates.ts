@@ -101,6 +101,7 @@ export function getWelcomeEmail(payload: WelcomeEmailPayload) {
               Built for those<br>who stay.
             </h1>
             <p style="font-size:15px; color:#c0d4c8; line-height:1.7; margin:0 0 32px; max-width:440px;">
+              Hi ${payload.customer_name || 'Operative'},<br><br>
               You didn't just buy apparel. You chose a standard. GRIT is built for people who show up — through effort, failure, and progress. That's who you are now.
             </p>
             <table cellpadding="0" cellspacing="0" border="0" role="presentation">

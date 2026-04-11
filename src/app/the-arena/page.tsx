@@ -85,7 +85,7 @@ export default async function TheArenaPage() {
                     {entry.memberName}
                   </h3>
                   <blockquote className="font-editorial text-gray-300 leading-relaxed italic border-l-2 border-white/20 pl-4 py-1">
-                    "{entry.storyExcerpt}"
+                    &quot;{entry.storyExcerpt}&quot;
                   </blockquote>
                 </div>
               </article>

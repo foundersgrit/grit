@@ -32,7 +32,7 @@ export default function OurStoryPage() {
             Effort Counts Twice.
           </h1>
           <p className="font-editorial text-xl md:text-2xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
-            Talent begins the journey; perseverance finishes it. We build gear for those who understand that progress isn't loud. It's consistent.
+            Talent begins the journey; perseverance finishes it. We build gear for those who understand that progress isn&apos;t loud. It&apos;s consistent.
           </p>
         </div>
       </section>
@@ -44,7 +44,7 @@ export default function OurStoryPage() {
             <div>
               <h2 className="font-structural text-sm wattle-accent tracking-[0.2em] uppercase mb-4 text-wattle">Why GRIT Exists</h2>
               <p className="font-editorial text-xl md:text-2xl text-gray-300 leading-relaxed mb-6">
-                The market is saturated with disposable activewear meant to look good in a mirror. We saw a void for gear that looks best when it’s covered in dirt, sweat, and chalk. GRIT was forged to fill that void. We don't sell an aesthetic; we sell a tool for your work.
+                The market is saturated with disposable activewear meant to look good in a mirror. We saw a void for gear that looks best when it&apos;s covered in dirt, sweat, and chalk. GRIT was forged to fill that void. We don&apos;t sell an aesthetic; we sell a tool for your work.
               </p>
             </div>
             <div className="relative h-[400px] bg-dark-slate flex items-center justify-center p-8 border border-white/10">
@@ -77,7 +77,7 @@ export default function OurStoryPage() {
          <div className="container mx-auto px-4 max-w-4xl text-center">
             <h2 className="font-structural text-4xl md:text-5xl uppercase tracking-tighter mb-8">Radical Transparency</h2>
             <p className="font-editorial text-xl text-gray-300 mx-auto leading-relaxed mb-16">
-              When we say "reinforced to last," we mean it. Here is how we build. No secrets. No corporate fluff.
+              When we say &quot;reinforced to last,&quot; we mean it. Here is how we build. No secrets. No corporate fluff.
             </p>
 
             <div className="grid md:grid-cols-3 gap-8 text-left">
@@ -96,7 +96,7 @@ export default function OurStoryPage() {
               <div className="p-8 border border-white/10 bg-bottle-green/30">
                 <h3 className="font-structural text-xl uppercase mb-4">Quality Testing</h3>
                 <p className="font-editorial text-gray-400">
-                  Machines don't wear GRIT. People do. Prototypes undergo 60 days of relentless, real-world testing by our community before reaching production.
+                  Machines don&apos;t wear GRIT. People do. Prototypes undergo 60 days of relentless, real-world testing by our community before reaching production.
                 </p>
               </div>
             </div>
@@ -106,7 +106,7 @@ export default function OurStoryPage() {
       {/* Where We're Going */}
       <section className="py-24 md:py-32 bg-bottle-green">
          <div className="container mx-auto px-4 max-w-4xl text-center">
-             <h2 className="font-structural text-sm tracking-[0.2em] uppercase mb-4 text-wattle">Where We're Going</h2>
+             <h2 className="font-structural text-sm tracking-[0.2em] uppercase mb-4 text-wattle">Where We&apos;re Going</h2>
              <h3 className="font-structural text-3xl md:text-5xl uppercase tracking-tighter mb-8 leading-tight">
                The work is never finished. We continue to engineer better tools for a community that demands more from themselves.
              </h3>

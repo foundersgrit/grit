@@ -6,11 +6,26 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ConfirmationNumber, Bolt, History, InfoOutlined } from "@mui/icons-material";
 import { useToast } from "@/components/providers/ToastProvider";
 
+interface Transaction {
+  orderId: string;
+  amountUsed: number;
+  date: string;
+}
+
+interface GiftCardDetails {
+  code: string;
+  balance: number;
+  originalAmount: number;
+  status: string;
+  expiresAt: string;
+  transactions: Transaction[];
+}
+
 export default function GiftCardBalancePage() {
   const { showToast } = useToast();
   const [code, setCode] = useState("");
   const [isChecking, setIsChecking] = useState(false);
-  const [cardDetails, setCardDetails] = useState<any>(null);
+  const [cardDetails, setCardDetails] = useState<GiftCardDetails | null>(null);
 
   const handleCheck = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,7 +113,7 @@ export default function GiftCardBalancePage() {
                           <History sx={{ fontSize: 16 }} /> Mission History
                        </h4>
                        <div className="space-y-3">
-                          {cardDetails.transactions.map((tx: any, idx: number) => (
+                          {cardDetails.transactions.map((tx: Transaction, idx: number) => (
                              <div key={idx} className="flex justify-between items-center text-[10px] uppercase font-mono">
                                 <span className="text-gray-500">{tx.orderId}</span>
                                 <span className="text-red-400">-৳{tx.amountUsed}</span>

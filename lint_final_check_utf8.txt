@@ -1,0 +1,326 @@
+﻿
+> grit-web@0.1.0 lint
+> eslint
+
+
+G:\Antigravity\Grit\src\app\account\notifications\page.tsx
+  7:39  warning  'Bolt' is defined but never used  @typescript-eslint/no-unused-vars
+
+G:\Antigravity\Grit\src\app\account\referrals\page.tsx
+  3:17  warning  'useState' is defined but never used  @typescript-eslint/no-unused-vars
+
+G:\Antigravity\Grit\src\app\contact\page.tsx
+  75:15   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  75:172  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+
+G:\Antigravity\Grit\src\app\gift-cards\balance\page.tsx
+    6:45  warning  'InfoOutlined' is defined but never used  @typescript-eslint/no-unused-vars
+   13:50  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  101:62  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+G:\Antigravity\Grit\src\app\gift-cards\page.tsx
+  5:18  warning  'AnimatePresence' is defined but never used  @typescript-eslint/no-unused-vars
+  6:24  warning  'Mail' is defined but never used             @typescript-eslint/no-unused-vars
+  6:30  warning  'CalendarMonth' is defined but never used    @typescript-eslint/no-unused-vars
+
+G:\Antigravity\Grit\src\app\layout.tsx
+   6:10  warning  'ChatBubble' is defined but never used  @typescript-eslint/no-unused-vars
+  62:8   warning  'dynamic' is defined but never used     @typescript-eslint/no-unused-vars
+
+G:\Antigravity\Grit\src\app\redeem\page.tsx
+   3:27  warning  'useEffect' is defined but never used             @typescript-eslint/no-unused-vars
+  14:26  warning  'authLoading' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  20:44  error    Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+
+G:\Antigravity\Grit\src\app\shop\bundles\page.tsx
+  6:43  warning  'LocalOffer' is defined but never used  @typescript-eslint/no-unused-vars
+  7:8   warning  'Image' is defined but never used       @typescript-eslint/no-unused-vars
+
+G:\Antigravity\Grit\src\app\shop\kit-builder\page.tsx
+   5:10  warning  'useUserContext' is defined but never used    @typescript-eslint/no-unused-vars
+   7:10  warning  'motion' is defined but never used            @typescript-eslint/no-unused-vars
+   7:18  warning  'AnimatePresence' is defined but never used   @typescript-eslint/no-unused-vars
+   8:70  warning  'Close' is defined but never used             @typescript-eslint/no-unused-vars
+  34:11  warning  'addItem' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+G:\Antigravity\Grit\src\app\shop\page.tsx
+  27:37  error  Unexpected any. Specify a different type                                                                                                                    @typescript-eslint/no-explicit-any
+  72:17  error  Do not use an `<a>` element to navigate to `/shop/`. Use `<Link />` from `next/link` instead. See: https://nextjs.org/docs/messages/no-html-link-for-pages  @next/next/no-html-link-for-pages
+  72:17  error  Do not use an `<a>` element to navigate to `/shop/`. Use `<Link />` from `next/link` instead. See: https://nextjs.org/docs/messages/no-html-link-for-pages  @next/next/no-html-link-for-pages
+
+G:\Antigravity\Grit\src\app\sitemap.ts
+  42:34  error  Expected a `const` instead of a literal type assertion  @typescript-eslint/prefer-as-const
+  50:34  error  Expected a `const` instead of a literal type assertion  @typescript-eslint/prefer-as-const
+  58:34  error  Expected a `const` instead of a literal type assertion  @typescript-eslint/prefer-as-const
+
+G:\Antigravity\Grit\src\app\support\returns-repairs\page.tsx
+  22:17   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  22:24   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  22:121  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  22:136  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  37:124  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  96:105  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+G:\Antigravity\Grit\src\app\sustainability\page.tsx
+  2:10  warning  'Button' is defined but never used  @typescript-eslint/no-unused-vars
+
+G:\Antigravity\Grit\src\components\account\LoyaltyDashboard.tsx
+  38:13  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  38:17  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  38:48  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+
+G:\Antigravity\Grit\src\components\account\ProfileForm.tsx
+  16:10  warning  'password' is assigned a value but never used                                                                @typescript-eslint/no-unused-vars
+  16:20  warning  'setPassword' is assigned a value but never used                                                             @typescript-eslint/no-unused-vars
+  26:23  warning  'error' is assigned a value but never used                                                                   @typescript-eslint/no-unused-vars
+  45:6   warning  React Hook useEffect has a missing dependency: 'supabase'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  66:21  error    Unexpected any. Specify a different type                                                                     @typescript-eslint/no-explicit-any
+
+G:\Antigravity\Grit\src\components\account\WishlistGrid.tsx
+  12:11  warning  'addItem' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+G:\Antigravity\Grit\src\components\auth\AuthForm.tsx
+  59:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  82:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+G:\Antigravity\Grit\src\components\contact\ContactForm.tsx
+  3:27  warning  'useEffect' is defined but never used  @typescript-eslint/no-unused-vars
+
+G:\Antigravity\Grit\src\components\layout\Header.tsx
+   6:46  warning  'useTransform' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            @typescript-eslint/no-unused-vars
+  25:7   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+G:\Antigravity\Grit\src\components\layout\Header.tsx:25:7
+  23 |   useEffect(() => {
+  24 |     if (itemCount > prevItemCount.current) {
+> 25 |       setShouldShake(true);
+     |       ^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  26 |       const timer = setTimeout(() => setShouldShake(false), 300);
+  27 |       return () => clearTimeout(timer);
+  28 |     }  react-hooks/set-state-in-effect
+
+G:\Antigravity\Grit\src\components\layout\NotificationPanel.tsx
+   7:59  warning  'Close' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 @typescript-eslint/no-unused-vars
+  30:19  warning  'error' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+  37:37  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-explicit-any
+  52:7   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+G:\Antigravity\Grit\src\components\layout\NotificationPanel.tsx:52:7
+  50 |   useEffect(() => {
+  51 |     if (!user) {
+> 52 |       setNotifications([]);
+     |       ^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  53 |       setUnreadCount(0);
+  54 |       return;
+  55 |     }  react-hooks/set-state-in-effect
+  72:6   warning  React Hook useEffect has missing dependencies: 'fetchNotifications' and 'supabase'. Either include them or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            react-hooks/exhaustive-deps
+
+G:\Antigravity\Grit\src\components\onboarding\WelcomeFlow.tsx
+  24:21  warning  'error' is assigned a value but never used                                                                   @typescript-eslint/no-unused-vars
+  36:6   warning  React Hook useEffect has a missing dependency: 'supabase'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+G:\Antigravity\Grit\src\components\providers\AuthProvider.tsx
+  10:52  error    Unexpected any. Specify a different type                                                                          @typescript-eslint/no-explicit-any
+  11:52  error    Unexpected any. Specify a different type                                                                          @typescript-eslint/no-explicit-any
+  12:35  error    Unexpected any. Specify a different type                                                                          @typescript-eslint/no-explicit-any
+  13:47  error    Unexpected any. Specify a different type                                                                          @typescript-eslint/no-explicit-any
+  14:56  error    Unexpected any. Specify a different type                                                                          @typescript-eslint/no-explicit-any
+  16:45  error    Unexpected any. Specify a different type                                                                          @typescript-eslint/no-explicit-any
+  45:6   warning  React Hook useEffect has a missing dependency: 'supabase.auth'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+G:\Antigravity\Grit\src\components\providers\CartContext.tsx
+    4:45  warning  'Cart' is defined but never used                                                                                               @typescript-eslint/no-unused-vars
+  110:21  error    Unexpected any. Specify a different type                                                                                       @typescript-eslint/no-explicit-any
+  122:6   warning  React Hook useEffect has missing dependencies: 'showToast' and 'supabase'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+  143:35  error    Unexpected any. Specify a different type                                                                                       @typescript-eslint/no-explicit-any
+  143:49  error    Unexpected any. Specify a different type                                                                                       @typescript-eslint/no-explicit-any
+
+G:\Antigravity\Grit\src\components\providers\ComparisonContext.tsx
+  3:54  warning  'useEffect' is defined but never used  @typescript-eslint/no-unused-vars
+
+G:\Antigravity\Grit\src\components\providers\UserProvider.tsx
+   31:7  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+G:\Antigravity\Grit\src\components\providers\UserProvider.tsx:31:7
+  29 |
+  30 |     if (!user) {
+> 31 |       setOrders(prev => prev.length ? [] : prev);
+     |       ^^^^^^^^^ Avoid calling setState() directly within an effect
+  32 |       setWishlist(prev => prev.length ? [] : prev);
+  33 |       setLoyalty(prev => prev ? null : prev);
+  34 |       setReferral(prev => prev ? null : prev);  react-hooks/set-state-in-effect
+  113:6  warning  React Hook useEffect has a missing dependency: 'supabase'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    react-hooks/exhaustive-deps
+
+G:\Antigravity\Grit\src\components\shop\AbandonmentBanner.tsx
+   5:10  warning  'Button' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      @typescript-eslint/no-unused-vars
+   7:8   warning  'Link' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+  12:11  warning  'cart' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               @typescript-eslint/no-unused-vars
+  24:7   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+G:\Antigravity\Grit\src\components\shop\AbandonmentBanner.tsx:24:7
+  22 |       return () => clearTimeout(timer);
+  23 |     } else {
+> 24 |       setIsVisible(prev => !prev ? prev : false);
+     |       ^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  25 |     }
+  26 |   }, [itemCount, pathname]);
+  27 |  react-hooks/set-state-in-effect
+
+G:\Antigravity\Grit\src\components\shop\CheckoutFlow.tsx
+  45:6  warning  React Hook useEffect has a missing dependency: 'shippingInfo.email'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+G:\Antigravity\Grit\src\components\shop\ComparisonBar.tsx
+  3:18  warning  'AnimatePresence' is defined but never used  @typescript-eslint/no-unused-vars
+
+G:\Antigravity\Grit\src\components\shop\ComparisonTable.tsx
+  5:17  warning  'ShoppingCart' is defined but never used  @typescript-eslint/no-unused-vars
+
+G:\Antigravity\Grit\src\components\shop\FitCalculator.tsx
+  4:20  warning  'useEffect' is defined but never used  @typescript-eslint/no-unused-vars
+
+G:\Antigravity\Grit\src\components\shop\ProductDetail.tsx
+  13:52  warning  'Straighten' is defined but never used                                                                      @typescript-eslint/no-unused-vars
+  13:64  warning  'Bolt' is defined but never used                                                                            @typescript-eslint/no-unused-vars
+  38:6   warning  React Hook useEffect has a missing dependency: 'product'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+G:\Antigravity\Grit\src\components\shop\RelatedProducts.tsx
+  22:23  warning  'error' is assigned a value but never used                                                                   @typescript-eslint/no-unused-vars
+  40:6   warning  React Hook useEffect has a missing dependency: 'supabase'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+G:\Antigravity\Grit\src\components\shop\ReviewSection.tsx
+   30:10  warning  'loading' is assigned a value but never used                                                                                      @typescript-eslint/no-unused-vars
+   85:6   warning  React Hook useEffect has missing dependencies: 'fetchReviews' and 'supabase'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+  113:19  error    Unexpected any. Specify a different type                                                                                          @typescript-eslint/no-explicit-any
+
+G:\Antigravity\Grit\src\components\shop\ShopSidebar.tsx
+    8:10  warning  'FilterList' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 @typescript-eslint/no-unused-vars
+  160:10  error    Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+G:\Antigravity\Grit\src\components\shop\ShopSidebar.tsx:160:10
+  158 |       {/* Desktop Sidebar */}
+  159 |       <aside className="hidden md:block w-64 shrink-0">
+> 160 |         <SidebarContent />
+      |          ^^^^^^^^^^^^^^ This component is created during render
+  161 |       </aside>
+  162 |
+  163 |       {/* Mobile Drawer */}
+
+G:\Antigravity\Grit\src\components\shop\ShopSidebar.tsx:43:26
+   41 |   };
+   42 |
+>  43 |   const SidebarContent = () => (
+      |                          ^^^^^^^
+>  44 |     <div className="flex flex-col gap-12">
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  45 |       <div className="md:mb-12">
+      ΓÇª
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 134 |     </div>
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 135 |   );
+      | ^^^^ The component is created during render here
+  136 |
+  137 |   return (
+  138 |     <>                                                                                                                                     react-hooks/static-components
+  189:18  error    Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+G:\Antigravity\Grit\src\components\shop\ShopSidebar.tsx:189:18
+  187 |               <h2 className="font-structural text-2xl uppercase tracking-tighter mb-12">Gear Specifications</h2>
+  188 |               <div className="flex-1 overflow-y-auto scrollbar-none">
+> 189 |                 <SidebarContent />
+      |                  ^^^^^^^^^^^^^^ This component is created during render
+  190 |               </div>
+  191 |             </motion.div>
+  192 |           </>
+
+G:\Antigravity\Grit\src\components\shop\ShopSidebar.tsx:43:26
+   41 |   };
+   42 |
+>  43 |   const SidebarContent = () => (
+      |                          ^^^^^^^
+>  44 |     <div className="flex flex-col gap-12">
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  45 |       <div className="md:mb-12">
+      ΓÇª
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 134 |     </div>
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 135 |   );
+      | ^^^^ The component is created during render here
+  136 |
+  137 |   return (
+  138 |     <>  react-hooks/static-components
+
+G:\Antigravity\Grit\src\components\shop\SocialProof.tsx
+  78:6  warning  React Hook useEffect has a missing dependency: 'supabase'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+G:\Antigravity\Grit\src\components\shop\TrustBadges.tsx
+  9:3  warning  'VerifiedUser' is defined but never used  @typescript-eslint/no-unused-vars
+
+G:\Antigravity\Grit\src\components\support\LiveChat.tsx
+   3:28  warning  'useState' is defined but never used      @typescript-eslint/no-unused-vars
+  18:16  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  18:43  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  19:16  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  21:16  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  23:18  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  26:19  warning  'error' is defined but never used         @typescript-eslint/no-unused-vars
+  26:26  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+G:\Antigravity\Grit\src\components\ui\CustomCursor.tsx
+  3:31  warning  'useRef' is defined but never used  @typescript-eslint/no-unused-vars
+
+G:\Antigravity\Grit\src\components\ui\LocalErrorBoundary.tsx
+  20:42  warning  '_' is defined but never used  @typescript-eslint/no-unused-vars
+
+G:\Antigravity\Grit\src\hooks\useRecentlyViewed.ts
+  37:5   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+G:\Antigravity\Grit\src\hooks\useRecentlyViewed.ts:37:5
+  35 |       }
+  36 |     }
+> 37 |     setLoading(prev => prev ? false : prev);
+     |     ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  38 |   }, [user]);
+  39 |
+  40 |   // Sync with Supabase for authenticated users  react-hooks/set-state-in-effect
+  45:21  warning  'error' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              @typescript-eslint/no-unused-vars
+  75:6   warning  React Hook useEffect has a missing dependency: 'supabase'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             react-hooks/exhaustive-deps
+
+Γ£û 105 problems (47 errors, 58 warnings)
+  3 errors and 0 warnings potentially fixable with the `--fix` option.
+

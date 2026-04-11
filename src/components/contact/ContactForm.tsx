@@ -32,7 +32,7 @@ export function ContactForm() {
       <div className="p-12 bg-bottle-green/30 border border-wattle/50 text-center animate-in fade-in zoom-in duration-500">
         <h3 className="font-structural text-2xl uppercase tracking-tighter mb-4 text-wattle">Message Sent.</h3>
         <p className="font-editorial text-gray-300">
-          We've received your data. We respond within 24 hours. The work continues.
+          We&apos;ve received your data. We respond within 24 hours. The work continues.
         </p>
       </div>
     );

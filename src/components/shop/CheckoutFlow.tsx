@@ -39,10 +39,10 @@ export function CheckoutFlow() {
   });
 
   useEffect(() => {
-    if (user && !shippingInfo.email) {
+    if (user?.email && user.email !== shippingInfo.email) {
       setShippingInfo(prev => ({ ...prev, email: user.email || "" }));
     }
-  }, [user, shippingInfo.email]);
+  }, [user?.email]);
 
   const [paymentMethod, setPaymentMethod] = useState<"bkash" | "nagad" | "cod" | "card">("bkash");
   const [transactionId, setTransactionId] = useState("");
@@ -385,7 +385,7 @@ export function CheckoutFlow() {
                   ].map((method) => (
                     <button 
                       key={method.id}
-                      onClick={() => setPaymentMethod(method.id as any)}
+                      onClick={() => setPaymentMethod(method.id as "bkash" | "nagad" | "cod" | "card")}
                       className={`px-8 py-3 whitespace-nowrap border text-xs uppercase tracking-widest transition-all ${
                         paymentMethod === method.id ? "bg-white text-dark-slate border-white" : "border-white/10 text-gray-500 hover:border-white/30"
                       }`}

@@ -33,7 +33,7 @@ export class LocalErrorBoundary extends Component<Props, State> {
             Brief Interruption
           </h3>
           <p className="font-editorial text-sm text-gray-400 mb-6 max-w-sm">
-            {this.props.fallbackMessage || "We're experiencing a brief interruption. Try again shortly."}
+            {this.props.fallbackMessage || "We&apos;re experiencing a brief interruption. Try again shortly."}
           </p>
           <Button 
             variant="secondary" 

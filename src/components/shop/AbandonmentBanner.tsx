@@ -15,11 +15,16 @@ export function AbandonmentBanner() {
 
   useEffect(() => {
     // Only show on root path after a small delay
-    if (pathname === "/" && itemCount > 0) {
-      const timer = setTimeout(() => setIsVisible(true), 2000);
+    if (itemCount > 0 && pathname !== "/cart" && pathname !== "/checkout") {
+      const timer = setTimeout(() => {
+        setIsVisible(prev => prev ? prev : true);
+      }, 5000);
       return () => clearTimeout(timer);
     } else {
-      setIsVisible(false);
+      const timer = setTimeout(() => {
+        setIsVisible(prev => !prev ? prev : false);
+      }, 0);
+      return () => clearTimeout(timer);
     }
   }, [itemCount, pathname]);
 

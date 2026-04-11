@@ -107,7 +107,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         .on(
           'postgres_changes',
           { event: '*', schema: 'public', table: 'carts', filter: `profile_id=eq.${user.id}` },
-          (payload: any) => {
+          (payload: { new: { items?: CartItem[] } }) => {
             if (!syncInProgress.current && payload.new && payload.new.items) {
               setCart(payload.new.items as CartItem[]);
             }
@@ -140,7 +140,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const addItem = async (product: any, variant: any, quantity: number = 1, bundle?: { id: string, name: string }) => {
+  const addItem = async (product: Product, variant: ProductVariant, quantity: number = 1, bundle?: { id: string, name: string }) => {
     const cartItemId = bundle 
       ? `${product.id}-${variant.size}-${variant.color || 'default'}-${bundle.id}` 
       : `${product.id}-${variant.size}-${variant.color || 'default'}`;

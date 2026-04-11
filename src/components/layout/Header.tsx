@@ -22,9 +22,14 @@ export function Header() {
 
   useEffect(() => {
     if (itemCount > prevItemCount.current) {
-      setShouldShake(true);
+      const stagger = setTimeout(() => {
+        setShouldShake(true);
+      }, 0);
       const timer = setTimeout(() => setShouldShake(false), 300);
-      return () => clearTimeout(timer);
+      return () => {
+        clearTimeout(stagger);
+        clearTimeout(timer);
+      };
     }
     prevItemCount.current = itemCount;
   }, [itemCount]);

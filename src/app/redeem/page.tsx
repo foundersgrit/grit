@@ -8,6 +8,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ConfirmationNumber, Bolt, ErrorOutline, CheckCircleOutline } from "@mui/icons-material";
 import { useToast } from "@/components/providers/ToastProvider";
 
+interface RedeemCardData {
+  amount: number;
+  balance: number;
+  status: string;
+}
+
 function RedeemContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -17,7 +23,7 @@ function RedeemContent() {
   const [code, setCode] = useState(searchParams.get("code") || "");
   const [isVerifying, setIsVerifying] = useState(false);
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
-  const [cardData, setCardData] = useState<any>(null);
+  const [cardData, setCardData] = useState<RedeemCardData | null>(null);
 
   const handleRedeem = async (e: React.FormEvent) => {
     e.preventDefault();

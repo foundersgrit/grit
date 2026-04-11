@@ -45,7 +45,7 @@ export default function FAQPage() {
             Common Inquiries
           </h1>
           <p className="font-editorial text-gray-400">
-            We'll sort this out. Here's exactly what you need to know about how we operate.
+            We&apos;ll sort this out. Here&apos;s exactly what you need to know about how we operate.
           </p>
         </div>
         

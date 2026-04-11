@@ -59,6 +59,8 @@ export default function Home() {
 
   return (
     <div className="w-full flex-1 flex flex-col">
+      <JsonLd data={organizationSchema} />
+      <JsonLd data={localBusinessSchema} />
        {/* Hero Section */}
        <section className="relative w-full h-[85vh] flex items-center justify-center overflow-hidden">
          <Image 

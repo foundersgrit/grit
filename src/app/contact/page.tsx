@@ -72,7 +72,7 @@ export default function ContactPage() {
             </div>
 
             <div className="p-8 border border-white/5 bg-white/5 italic font-editorial text-gray-400 text-sm leading-relaxed">
-              "Every message is evidence of a conversation. We don&apos;t use automated replies because your work isn&apos;t automated. A human from our team will respond."
+              &quot;Gear that gives back.&quot; Join our mission for sustainable high-performance equipment. We don&apos;t use automated replies because your work isn&apos;t automated. A human from our team will respond.
             </div>
           </div>
         </div>
