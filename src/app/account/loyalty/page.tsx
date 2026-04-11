@@ -20,8 +20,9 @@ export default function LoyaltyPage() {
     try {
       const result = await claimDailyXP();
       showToast(`Daily XP secured. +${result.xpAwarded} XP | Streak: ${result.streak} Days`);
-    } catch (err: any) {
-      showToast(err.message || "Claim attempt failed.");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Claim attempt failed.";
+      showToast(message);
     } finally {
       setIsClaiming(false);
     }

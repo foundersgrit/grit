@@ -62,7 +62,7 @@ export default function NotificationSettingsPage() {
                       <p className="font-editorial text-xs text-gray-500">{item.desc}</p>
                    </div>
                    <button 
-                     onClick={() => toggleChannel(item.id as any)}
+                     onClick={() => toggleChannel(item.id as keyof typeof channels)}
                      className={`w-12 h-6 flex items-center px-1 transition-colors ${channels[item.id as keyof typeof channels] ? "bg-wattle" : "bg-white/5"}`}
                    >
                       <motion.div 
@@ -93,7 +93,7 @@ export default function NotificationSettingsPage() {
                       <p className="font-editorial text-xs text-gray-500">{item.desc}</p>
                    </div>
                    <button 
-                     onClick={() => toggleChannel(item.id as any)}
+                     onClick={() => toggleChannel(item.id as keyof typeof channels)}
                      className={`w-12 h-6 flex items-center px-1 transition-colors ${channels[item.id as keyof typeof channels] ? "bg-wattle" : "bg-white/5"}`}
                    >
                       <motion.div 

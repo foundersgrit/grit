@@ -2,6 +2,7 @@
 
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
+import { LoyaltyStatus } from "@/types";
 
 export async function claimDailyXP() {
   const cookieStore = await cookies();
@@ -28,7 +29,8 @@ export async function claimDailyXP() {
     throw new Error("Daily telemetry already synchronized. Return in 24h.");
   }
 
-  const currentLoyalty = (profile.loyalty as any) || {
+
+  const currentLoyalty = (profile.loyalty as unknown as LoyaltyStatus) || {
     totalXP: 0,
     currentTier: "Foundation",
     streakDays: 0,

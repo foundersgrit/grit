@@ -47,7 +47,7 @@ export interface Order {
   itemCount: number;
   items: { name: string; image: string }[];
   shippingAddress: { city: string };
-  createdAt: any;
+  createdAt: string;
 }
 
 export interface WishlistItem {

@@ -8,7 +8,7 @@ import { cookies } from "next/headers";
  */
 export async function GET() {
   const timestamp = new Date().toISOString();
-  let services = {
+  const services = {
     supabase: "unknown",
     auth: "operational",
     storage: "operational"

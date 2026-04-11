@@ -7,10 +7,11 @@ import { Button } from "@/components/ui/Button";
 import { motion, AnimatePresence } from "framer-motion";
 import { ContentCopy, Share, WhatsApp, GroupAdd, EmojiEvents, InfoOutlined } from "@mui/icons-material";
 import { useToast } from "@/components/providers/ToastProvider";
+import { UserReferral, ReferralReward } from "@/types";
 
 export default function ReferralsPage() {
   const { user } = useAuth();
-  const { loyalty, isLoading } = useUserContext();
+  const { referral, isLoading } = useUserContext();
   const { showToast } = useToast();
   const [isCopying, setIsCopying] = useState(false);
 
@@ -21,7 +22,7 @@ export default function ReferralsPage() {
   // For now, I'll assume we might need to fetch it or it's accessible.
   // I'll mocks the display data based on types if UserProvider isn't updated yet.
   
-  const referralData = (loyalty as any)?.referral || {
+  const referralData = referral || {
     referralCode: "XXXXXXX",
     referralLink: "https://www.gritapparel.com/join?ref=XXXXXXX",
     referralsCompleted: 0,
@@ -146,7 +147,7 @@ export default function ReferralsPage() {
             <p className="font-editorial text-gray-500 italic">No rewards reported in your vault yet. Start recruiting.</p>
           </div>
         ) : (
-          referralData.referralRewards.map((reward: any) => (
+          referralData.referralRewards.map((reward: ReferralReward) => (
             <div key={reward.id} className="flex items-center justify-between p-6 bg-dark-slate border border-white/5">
               <div className="flex items-center gap-6">
                 <div className={`w-12 h-12 rounded-full flex items-center justify-center ${reward.used ? "bg-gray-800 text-gray-500" : "bg-wattle/10 text-wattle"}`}>
@@ -172,7 +173,7 @@ export default function ReferralsPage() {
           <h3 className="font-structural text-lg uppercase tracking-widest text-white mb-2">The Mission Outcome</h3>
           <p className="font-editorial text-sm text-gray-400 max-w-md">Every person you bring makes the arena stronger. Our gear is built for endurance—sharing it is the first step in the mission.</p>
         </div>
-        <Button variant="outline" className="px-8" onClick={() => (window as any).Tawk_API?.toggle()}>
+        <Button variant="outline" className="px-8" onClick={() => (window as unknown as { Tawk_API: { toggle: () => void } }).Tawk_API?.toggle()}>
           Contact Intelligence
         </Button>
       </div>

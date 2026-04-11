@@ -41,7 +41,16 @@ export async function POST(request: NextRequest) {
     if (orderError) throw orderError;
 
     // Insert order items
-    const orderItems = orderData.items.map((item: any) => ({
+    interface OrderItemPayload {
+      id: string;
+      variantId?: string;
+      name: string;
+      image: string;
+      quantity: number;
+      price: number;
+    }
+
+    const orderItems = (orderData.items as OrderItemPayload[]).map((item) => ({
       order_id: order.id,
       product_id: item.id,
       variant_id: item.variantId || 'base',
@@ -57,14 +66,31 @@ export async function POST(request: NextRequest) {
 
     if (itemsError) throw itemsError;
 
-    // Dispatch Order Confirmation Email (Background task in Next.js)
+    // Dispatch Branded Order Confirmation (Background)
     if (orderData.shippingInfo.email) {
-      const { sendOrderConfirmation } = await import("@/lib/email-service");
-      sendOrderConfirmation(orderData.shippingInfo.email, {
-        order_number,
-        total: orderData.financials.total,
-        items: orderData.items
-      }).catch(err => console.error("Critical: Email dispatch failure", err));
+      const { sendEmail } = await import("@/lib/emails/mailer");
+      const { getOrderConfirmEmail } = await import("@/lib/emails/templates");
+      
+      const firstItem = orderData.items[0];
+      
+      sendEmail({
+        to: orderData.shippingInfo.email,
+        subject: `Order #${order_number} confirmed. It's coming.`,
+        category: "commerce",
+        html: getOrderConfirmEmail({
+          order_id: order_number,
+          customer_name: `${orderData.shippingInfo.firstName} ${orderData.shippingInfo.lastName}`,
+          address_line_1: orderData.shippingInfo.address,
+          city: orderData.shippingInfo.city,
+          postal_code: orderData.shippingInfo.postalCode,
+          product_name: firstItem.name,
+          size: firstItem.size || "Standard",
+          color: firstItem.color || "Standard",
+          quantity: firstItem.quantity,
+          price: firstItem.price,
+          total: orderData.financials.total
+        })
+      }).catch(err => console.error("Critical: Branded email dispatch failure", err));
     }
 
     return NextResponse.json({ 
@@ -72,8 +98,9 @@ export async function POST(request: NextRequest) {
       orderId: order.id 
     }, { status: 201 });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to secure order.';
     console.error('Supabase order creation error:', error);
-    return NextResponse.json({ error: error.message || 'Failed to secure order.' }, { status: 500 });
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

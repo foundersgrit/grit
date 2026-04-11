@@ -9,7 +9,7 @@ const SENDER_EMAIL = 'G R I T <noreply@gritwear.shop>';
 export async function sendOrderConfirmation(to: string, order: {
   order_number: string;
   total: number;
-  items: any[];
+  items: { name: string; quantity: number; price: number }[];
 }) {
   try {
     const itemsHtml = order.items.map(item => `

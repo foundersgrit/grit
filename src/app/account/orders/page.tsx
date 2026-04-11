@@ -12,7 +12,7 @@ export default function OrdersPage() {
           Order History
         </h1>
         <p className="font-editorial text-gray-400">
-          The gear you've earned. GRIT products are meant to be repaired, not replaced. Use the repair portal for any structural issues.
+          The gear you&apos;ve earned. GRIT products are meant to be repaired, not replaced. Use the repair portal for any structural issues.
         </p>
       </div>
       <OrdersList />
