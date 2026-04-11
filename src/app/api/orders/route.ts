@@ -2,13 +2,13 @@ import { createClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
-// Admin client with service role to bypass RLS for critical transactions
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
-
 export async function POST(request: NextRequest) {
+  // Admin client with service role to bypass RLS for critical transactions
+  const supabaseAdmin = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL || "http://localhost:54321",
+    process.env.SUPABASE_SERVICE_ROLE_KEY || "dummy-key"
+  );
+
   try {
     const orderData = await request.json();
     const cookieStore = await cookies();
